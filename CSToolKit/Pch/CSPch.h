@@ -9,6 +9,30 @@
 #ifndef CSPch_h
 #define CSPch_h
 
+/*******************************************枚举*******************************************************/
+
+///请求状态码
+typedef NS_ENUM(NSInteger,RequestStatusCode){
+    
+    ///请求
+    RequestSuccessful = 0,
+    
+    ///请求链接Url异常
+    RequestLinkUrlUnusual = 1,
+    
+    ///参数异常
+    RequestParameterUnusual = 2,
+    
+    ///请求连接中断
+    RequestLinkStop = 3,
+    
+    ///数据解析异常
+    RequestDataAnalysisUnusal = 4,
+    
+    ///请求异常
+    RequestUnsual = 5
+};
+
 /*****************************************功能区域*********************************************/
 /*
  * 打印宏
