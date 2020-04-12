@@ -37,6 +37,11 @@
             if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[CSBaseObject class]]) {
                 
                 [dataMutableDict setValue:[NSClassFromString([obj objectForKey:PropertyType]) dictEncapsulationAsModel:[dataMutableDict objectForKey:[obj objectForKey:PropertyName]]] forKey:[obj objectForKey:PropertyName]];
+            }else if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSArray class]] || [NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSMutableArray class]]) {
+                
+                [dataMutableDict setValue:[NSClassFromString([[[self class] getDictionaryForGenericsInModel] objectForKey:[obj objectForKey:PropertyName]]) dictsEncapsulationAsModels:[dataMutableDict objectForKey:[obj objectForKey:PropertyName]]] forKey:[obj objectForKey:PropertyName]];
+                
+                
             }
             
         }];
@@ -50,7 +55,7 @@
 ///字典自动封装，返回模型
 -(void)dictEncapsulationAsModel:(NSDictionary *)dataDict {
     
-    NSMutableDictionary *dataMutableDict = [[NSMutableDictionary alloc]initWithDictionary:dataDict];
+    __block NSMutableDictionary *dataMutableDict = [[NSMutableDictionary alloc]initWithDictionary:dataDict];
     
     NSArray *propertys = [self getPropertys];
     
@@ -61,6 +66,10 @@
             if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[CSBaseObject class]]) {
                       
                 [dataMutableDict setValue:[NSClassFromString([obj objectForKey:PropertyType]) dictEncapsulationAsModel:[dataMutableDict objectForKey:[obj objectForKey:PropertyName]]] forKey:[obj objectForKey:PropertyName]];
+                
+            }else if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSArray class]] || [NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSMutableArray class]]) {
+                
+                [dataMutableDict setValue:[NSClassFromString([[[self class] getDictionaryForGenericsInModel] objectForKey:[obj objectForKey:PropertyName]]) dictsEncapsulationAsModels:[dataMutableDict objectForKey:[obj objectForKey:PropertyName]]] forKey:[obj objectForKey:PropertyName]];
                 
             }
             
@@ -98,11 +107,15 @@
     
     NSMutableArray *modelArray = [[NSMutableArray alloc]init];
     
-    [dataDicts enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        
-        [modelArray addObject:[[self class] dictEncapsulationAsModel:obj]];
-        
-    }];
+    if (dataDicts.count > 0) {
+        [dataDicts enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            
+            if ([obj isKindOfClass:[NSDictionary class]]) {
+                [modelArray addObject:[[self class] dictEncapsulationAsModel:obj]];
+            }
+            
+        }];
+    }
     
     return modelArray.copy;
 }
@@ -122,7 +135,12 @@
             
                  [mutableDict setObject:[[self valueForKey:[obj objectForKey:PropertyName]] modelEncapsulationAsDict] forKey:[obj objectForKey:PropertyName]];
             
-            }else {
+            }else if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSArray class]] || [NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSMutableArray class]]) {
+                
+                [mutableDict setValue:[self modelsEncapsulationAsDicts:[self valueForKey:[obj objectForKey:PropertyName]]] forKey:[obj objectForKey:PropertyName]];
+                
+            }
+            else {
                                 
                 [mutableDict setValue:[self valueForKey:[obj objectForKey:PropertyName]] forKey:[obj objectForKey:PropertyName]];
                 
@@ -132,6 +150,25 @@
     }
 
     return mutableDict.copy;
+}
+
+///模型数组封装为字典数组
+-(NSArray *)modelsEncapsulationAsDicts:(NSArray *)models {
+    
+    __block NSMutableArray *mutableArray = [[NSMutableArray alloc]init];
+    
+    if (![models isKindOfClass:[NSNull class]] && models != nil && models.count > 0) {
+        
+        [models enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            
+            [mutableArray addObject:[obj modelEncapsulationAsDict]];
+            
+        }];
+        
+    }
+    
+    return mutableArray.copy;
+    
 }
 
 ///模型转换为Json字符串
@@ -170,6 +207,7 @@
     
     [subPropertys addObjectsFromArray:propertys];
     
+    
     return subPropertys.copy;
 }
 
@@ -199,6 +237,10 @@
     }
     
     return jsonDict;
+}
+
++(NSDictionary *)getDictionaryForGenericsInModel {
+    return [NSDictionary dictionary];
 }
 
 @end

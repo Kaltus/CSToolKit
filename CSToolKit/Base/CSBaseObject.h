@@ -88,6 +88,13 @@ typedef NS_ENUM(NSInteger,RequestStatusCode){
 -(NSDictionary *)modelEncapsulationAsDict;
 
 /*
+ * @description 模型数组解析为字典数组
+ * @param models 模型解析为字典数组
+ * @return 字典数组
+ */
+-(NSArray *)modelsEncapsulationAsDicts:(NSArray *)models;
+
+/*
  * @description 模型转换为JSON 字符串
  * @return Json字符串
  */
@@ -100,6 +107,14 @@ typedef NS_ENUM(NSInteger,RequestStatusCode){
  * @remark 无论解析是否成功，都将会返回一个空的数组。并不是nil。因此判空处理 应该为 dict.allKeys > 0 判定里面的元素是否大于0
  */
 -(NSDictionary *)jsonConvertDict:(NSString *)jsonString;
+
+/*
+ * @description 获取一个字典，这个字典是模型中的泛型数组的集合
+ * @return 返回一个类型数组
+ * @remark 当继承自 CSBaseModel 中的属性含有模型数组的时候。必须在该类中实现这个静态方法。@{@"数组的泛型字符串":@"模型中的属性名"} eg:@property (nonatomic,strong) NSArray<TestModel1 *> *testArray; 在模型类的.m中 实现getDictionaryForGenericsInModel 并 return @{@"testArray":@"TestModel1"};
+ */
++(NSDictionary *)getDictionaryForGenericsInModel;
+
 
 @end
 
