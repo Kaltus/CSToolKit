@@ -49,4 +49,36 @@
     
 }
 
+///数组转换为json字符串
+-(NSString *)arrayConvertJsonString {
+    
+    NSError *error;
+    NSData *jsonData = nil;
+    
+    @try {
+        
+        jsonData = [NSJSONSerialization dataWithJSONObject:self
+        options:(NSJSONWritingOptions) (self ? NSJSONWritingPrettyPrinted : 0)
+          error:&error];
+        
+    } @catch (NSException *exception) {
+        
+        return @"";
+        
+    } @finally {
+        
+        if (error == nil) {
+            
+             return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+            
+        }else {
+            
+            return @"";
+            
+        }
+        
+    }
+
+}
+
 @end

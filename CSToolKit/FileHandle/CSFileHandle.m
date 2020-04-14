@@ -40,6 +40,34 @@
     return folderPath;
 }
 
+///获取沙盒根目录
++(NSString *)getSandboxFolder:(SandBoxFolderType)SandBoxFolderType {
+    
+    NSString *folderPath = @"";
+    
+    switch (SandBoxFolderType) {
+        case FolderDocumentType:{
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+            folderPath = [paths objectAtIndex:0];
+        }break;
+        case FolderLibraryTye:{
+             NSArray *libPaths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+            folderPath = [libPaths objectAtIndex:0];
+        }break;
+        case FolderCachesType:{
+            NSArray *cacPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+            folderPath = [cacPath objectAtIndex:0];
+        }break;
+        case FolderTempType:{
+            folderPath = NSTemporaryDirectory();
+        }break;
+        
+        default:
+            break;
+    }
+    return folderPath;
+}
+
 ///创建文件夹
 -(BOOL)createFolder:(SandBoxFolderType)sandboxFolderType folderRelativePath:(NSString *)folderRelativePath folderName:(NSString *)folderName {
         
@@ -121,6 +149,25 @@
 
 ///获取目标路径
 -(NSString *)getObjectPath:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName {
+    
+    NSString *rootPath = [self getSandboxFolder:sandBoxFolderType];
+    
+    NSString *folderPath = [rootPath stringByAppendingPathComponent:folderRelativePath];
+    
+    NSString *filePath = @"";
+    
+    if(fileName == nil || [fileName isEqualToString:@""]) {
+        
+        filePath = folderPath;
+        
+    }else {
+        filePath = [folderPath stringByAppendingPathComponent:fileName];
+    }
+    return filePath;
+}
+
+///获取目标路径
++(NSString *)getObjectPath:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName {
     
     NSString *rootPath = [self getSandboxFolder:sandBoxFolderType];
     

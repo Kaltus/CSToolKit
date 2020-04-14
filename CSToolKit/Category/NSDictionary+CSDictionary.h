@@ -14,7 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  * @description 字典转换为Json字符串
- * @param revokeForeAndAfterNewLine 是否移除收尾换行 （默认不移除）
  * @return Json字符串
  */
 -(NSString *)dictConvertJson;

@@ -6,14 +6,11 @@
 //  Copyright © 2020 程戍. All rights reserved.
 //
 
-#import "CSBaseObject.h"
-
-#import "NSArray+CSArray.h"
-#import "NSDictionary+CSDictionary.h"
+#import "CSFileHandle.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CSBaseModel : CSBaseObject <NSSecureCoding>
+@interface CSBaseModel :CSFileHandle  <NSSecureCoding>
 
 + (BOOL) supportsSecureCoding;
 

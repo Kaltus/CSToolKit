@@ -7,8 +7,6 @@
 //
 
 #import "CSBaseModel.h"
-#import <UIKit/UIKit.h>
-#import "CSPch.h"
 
 @implementation CSBaseModel
 
@@ -24,13 +22,19 @@
     [coderDict enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
         
         
-        if ([obj isKindOfClass:[NSDictionary class]]) {
+        
+        
+        if ([obj isKindOfClass:[NSDictionary class]] || [obj isKindOfClass:[NSMutableDictionary class]]) {
             
             NSData *jsonData = [NSJSONSerialization dataWithJSONObject:obj options:0 error:0];
             
             [aCoder encodeObject:[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] forKey:key];
             
-        }else {
+        }else if ([obj isKindOfClass:[NSArray class]] || [obj isKindOfClass:[NSMutableArray class]]){
+            
+            [aCoder encodeObject:[obj arrayConvertJsonString] forKey:key];
+            
+        }else{
             
             [aCoder encodeObject:obj forKey:key];
         }
@@ -58,6 +62,10 @@
             
             [decoderDict setObject:[self jsonConvertDict:decodeObject] forKey:[obj objectForKey:PropertyName]];
             
+        }else if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSArray class]] || [NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSMutableArray class]]) {
+            
+            [decoderDict setObject:[decodeObject jsonConvertObject:NSASCIIStringEncoding] forKey:[obj objectForKey:PropertyName]];
+            
         }else {
             
             [decoderDict setObject:decodeObject forKey:[obj objectForKey:PropertyName]];
@@ -75,57 +83,58 @@
 /// 通过文件名序列化模型到沙盒中
 -(BOOL)modelSerialization:(NSString *)fileName
 {
-    NSString *file = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.data",fileName]];
     
-
-//    BOOL fileHave=[[NSFileManager defaultManager] fileExistsAtPath:file];
-//
-//    if (fileHave) {
-//
-//        BOOL DeleteFile= [fileManager removeItemAtPath:file error:nil];
-//
-//        if (DeleteFile) {
-//             文件已经存在，做删除文件操作。 后续文件操作更新
-//        }
-//
-//    }
+    BOOL flag = [self createFolder:FolderCachesType folderRelativePath:CSToolKitFolder folderName:ModelArchiveFolder];
     
     BOOL result = NO;
     
-    if (CS_SystemVersion >= 12.0) {
+    if (flag) {
         
-        NSError *error;
+        NSString *folderPath = [self getObjectPath:FolderCachesType folderRelativePath:CSToolKitFolder fileName:ModelArchiveFolder];
         
-        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self
-                              requiringSecureCoding:YES
-                                              error:&error];
-        if (error)
+        NSString *filePath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.data",fileName]];
+        
+        if (CS_SystemVersion >= 12.0) {
+            
+            NSError *error;
+            
+            NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self
+                                  requiringSecureCoding:YES
+                                                  error:&error];
+            if (error)
+                return NO;
+        
+            result = [data writeToFile:filePath atomically:YES];
+            
+        }else {
+            result = [NSKeyedArchiver archiveRootObject:self toFile:filePath];
+        }
+        
+        if (result) {
+            
+            return YES;
+            
+        }else
+        {
             return NO;
-    
-        result = [data writeToFile:file atomically:YES];
+        }
         
     }else {
-        result = [NSKeyedArchiver archiveRootObject:self toFile:file];
-    }
-    
-    if (result) {
-        return YES;
-    }else
-    {
         return NO;
     }
 }
 
 /// 反序列化，通过文件名从沙盒中取出模型
 +(id)modelDeserialization:(NSString *)fileName {
-    
-    NSString *file = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.data",fileName]];
+
+    NSString *folderPath = [self getObjectPath:FolderCachesType folderRelativePath:CSToolKitFolder fileName:ModelArchiveFolder];
+    NSString *filePath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.data",fileName]];
     
     if (CS_SystemVersion >= 12.0) {
         
         NSError *error;
         
-        NSData *data = [[NSData alloc] initWithContentsOfFile:file];
+        NSData *data = [[NSData alloc] initWithContentsOfFile:filePath];
         
         id content = [NSKeyedUnarchiver unarchivedObjectOfClass:[self class] fromData:data error:&error];
         
@@ -137,7 +146,7 @@
         
     }else {
         
-        return [NSKeyedUnarchiver unarchiveObjectWithFile:file];
+        return [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
     }
 
 }

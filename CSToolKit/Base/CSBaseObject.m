@@ -7,10 +7,6 @@
 //
 
 #import "CSBaseObject.h"
-#import "CSPch.h"
-#import "NSArray+CSArray.h"
-#import <UIKit/UIKit.h>
-
 
 @implementation CSBaseObject
 
@@ -55,28 +51,43 @@
 ///字典自动封装，返回模型
 -(void)dictEncapsulationAsModel:(NSDictionary *)dataDict {
     
-    __block NSMutableDictionary *dataMutableDict = [[NSMutableDictionary alloc]initWithDictionary:dataDict];
-    
+    __block NSMutableDictionary *dataMutableDict = [[NSMutableDictionary alloc]init];
     NSArray *propertys = [self getPropertys];
     
     if (propertys.count > 0) {
            
         [propertys enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                  
+            id content = nil;
+            
             if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[CSBaseObject class]]) {
                       
-                [dataMutableDict setValue:[NSClassFromString([obj objectForKey:PropertyType]) dictEncapsulationAsModel:[dataMutableDict objectForKey:[obj objectForKey:PropertyName]]] forKey:[obj objectForKey:PropertyName]];
+                
+                content = [NSClassFromString([obj objectForKey:PropertyType]) dictEncapsulationAsModel:[dataDict objectForKey:[obj objectForKey:PropertyName]]];
+                
+                [dataMutableDict setValue:content forKey:[obj objectForKey:PropertyName]];
                 
             }else if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSArray class]] || [NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSMutableArray class]]) {
                 
-                [dataMutableDict setValue:[NSClassFromString([[[self class] getDictionaryForGenericsInModel] objectForKey:[obj objectForKey:PropertyName]]) dictsEncapsulationAsModels:[dataMutableDict objectForKey:[obj objectForKey:PropertyName]]] forKey:[obj objectForKey:PropertyName]];
+                content = [NSClassFromString([[[self class] getDictionaryForGenericsInModel] objectForKey:[obj objectForKey:PropertyName]]) dictsEncapsulationAsModels:[dataDict objectForKey:[obj objectForKey:PropertyName]]];
+                
+                [dataMutableDict setValue:content forKey:[obj objectForKey:PropertyName]];
+                
+            }else {
+                
+                content = [dataDict objectForKey:[obj objectForKey:PropertyName]];
+                           
+                if (content != nil) {
+                     [dataMutableDict setValue:content forKey:[obj objectForKey:PropertyName]];
+                }
                 
             }
-            
+
         }];
     }
        
     [self setValuesForKeysWithDictionary:dataMutableDict.copy];
+    
     
 }
 
@@ -239,6 +250,7 @@
     return jsonDict;
 }
 
+///获取字典 获取一个字典，这个字典是模型中的泛型数组的集合 此方法如果在模型中有模型数组，必须在模型中实现
 +(NSDictionary *)getDictionaryForGenericsInModel {
     return [NSDictionary dictionary];
 }

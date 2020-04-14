@@ -10,6 +10,9 @@
 
 #import "NSArray+CSArray.h"
 #import "NSDictionary+CSDictionary.h"
+#import "NSString+CSString.h"
+#import <UIKit/UIKit.h>
+#import "CSPch.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

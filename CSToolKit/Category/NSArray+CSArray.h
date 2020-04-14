@@ -19,6 +19,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 +(NSArray *)getPropertiesAndCategoryDicsByClass:(Class)modelClass;
 
+/*
+ * @description 数组转json
+ * @return json字符串
+ */
+-(NSString *)arrayConvertJsonString;
+
 @end
 
 NS_ASSUME_NONNULL_END

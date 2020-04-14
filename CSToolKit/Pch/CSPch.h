@@ -8,6 +8,7 @@
 
 #ifndef CSPch_h
 #define CSPch_h
+#import <Foundation/Foundation.h>
 
 /*****************************************枚举********************************************************/
 
@@ -85,23 +86,14 @@ typedef NS_ENUM(NSInteger,RequestStatusCode){
 ///读取属性值
 #define PropertyValue @"PropertyValue"
 
-///图片缓存文件夹
-#define CacheImageFolder @"CacheImageFolder"
-
-///音频文件缓存文件夹
-#define CacheAudioFolder @"CacheAudioFolder"
-
-///视频文件缓存文件夹
-#define CacheVedioFolder @"CacheVedioFolder"
-
-///Plist文件夹
-#define CachePlistFolder @"CachePlistFolder"
-
-///数据库文件夹
-#define CacheDataBaseFolder @"CacheDataBaseFolder"
+///CSToolKIt 用于文本缓存的专用文件夹
+#define CSToolKitFolder @"CSToolKitFolder"
 
 ///POSTForm表单请求标识
-#define Post_Form_Identifer @"CSKITFormRequest"
+#define Post_Form_Identifer @"CSToolKitFormRequest"
+
+///模型序列化文件夹
+#define ModelArchiveFolder @"ModelArchiveFolder"
 
 ///POSTForm表单中的隔离线
 #define Post_Form_Line @"\r\n"

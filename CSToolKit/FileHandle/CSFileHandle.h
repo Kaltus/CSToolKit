@@ -37,6 +37,13 @@ typedef NS_ENUM(NSInteger,SandBoxFolderType) {
 -(NSString *)getSandboxFolder:(SandBoxFolderType)sandBoxFolderType;
 
 /*
+* @description 获取沙盒目录路径
+* @param folderPathType 文件类型
+* @return 沙盒目录路径
+*/
++(NSString *)getSandboxFolder:(SandBoxFolderType)SandBoxFolderType;
+
+/*
  * @description 获取目标路径
  * @param sandBoxFolderType 沙盒目录类型
  * @param folderRelativePath 文件夹相对路径
@@ -45,6 +52,16 @@ typedef NS_ENUM(NSInteger,SandBoxFolderType) {
  * @remark 传入空fileName将只获取文件夹路径
  */
 -(NSString *)getObjectPath:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName;
+
+/*
+* @description 获取目标路径
+* @param sandBoxFolderType 沙盒目录类型
+* @param folderRelativePath 文件夹相对路径
+* @param fileName 文件名称
+* @return 获取目标路径
+* @remark 传入空fileName将只获取文件夹路径
+*/
++(NSString *)getObjectPath:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName;
 
 /*
  * @description 创建文件夹
