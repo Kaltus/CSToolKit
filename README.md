@@ -1,1 +1,2 @@
 # CSToolKit
+pod 'CSToolKit'
