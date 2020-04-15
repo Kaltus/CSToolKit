@@ -8,9 +8,16 @@
 
 #import "CSFileHandle.h"
 
-
+static CSFileHandle *fileHandle = nil;
 
 @implementation CSFileHandle
+
+///外部单例共享方法
++ (instancetype)shareSingleCase {
+    
+    return [[self alloc]init];
+    
+}
 
 ///获取沙盒根目录
 -(NSString *)getSandboxFolder:(SandBoxFolderType)SandBoxFolderType {
@@ -40,33 +47,33 @@
     return folderPath;
 }
 
-///获取沙盒根目录
-+(NSString *)getSandboxFolder:(SandBoxFolderType)SandBoxFolderType {
-    
-    NSString *folderPath = @"";
-    
-    switch (SandBoxFolderType) {
-        case FolderDocumentType:{
-            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
-            folderPath = [paths objectAtIndex:0];
-        }break;
-        case FolderLibraryTye:{
-             NSArray *libPaths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
-            folderPath = [libPaths objectAtIndex:0];
-        }break;
-        case FolderCachesType:{
-            NSArray *cacPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-            folderPath = [cacPath objectAtIndex:0];
-        }break;
-        case FolderTempType:{
-            folderPath = NSTemporaryDirectory();
-        }break;
-        
-        default:
-            break;
-    }
-    return folderPath;
-}
+/////获取沙盒根目录
+//+(NSString *)getSandboxFolder:(SandBoxFolderType)SandBoxFolderType {
+//
+//    NSString *folderPath = @"";
+//
+//    switch (SandBoxFolderType) {
+//        case FolderDocumentType:{
+//            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+//            folderPath = [paths objectAtIndex:0];
+//        }break;
+//        case FolderLibraryTye:{
+//             NSArray *libPaths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+//            folderPath = [libPaths objectAtIndex:0];
+//        }break;
+//        case FolderCachesType:{
+//            NSArray *cacPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+//            folderPath = [cacPath objectAtIndex:0];
+//        }break;
+//        case FolderTempType:{
+//            folderPath = NSTemporaryDirectory();
+//        }break;
+//
+//        default:
+//            break;
+//    }
+//    return folderPath;
+//}
 
 ///创建文件夹
 -(BOOL)createFolder:(SandBoxFolderType)sandboxFolderType folderRelativePath:(NSString *)folderRelativePath folderName:(NSString *)folderName {
@@ -74,6 +81,35 @@
     return [self checkFolderExists:[self getObjectPath:sandboxFolderType folderRelativePath:[folderRelativePath stringByAppendingPathComponent:folderName] fileName:@""]];
     
 }
+
+
+///创建一个文件并保存到指定的位置
+-(BOOL)createFile:(SandBoxFolderType)sandboxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName {
+    
+    NSString *folderPath = [self getObjectPath:sandboxFolderType folderRelativePath:folderRelativePath fileName:@""];
+    
+    BOOL status = [self checkFolderExists:folderPath];
+    
+    if (status) {
+        
+        NSString *filePath = [folderPath stringByAppendingPathComponent:fileName];
+        
+        status = [self createFile:filePath];
+        
+    }
+    
+    return status;
+}
+
+///创建一个文件并保存到指定的位置
+-(BOOL)createFile:(NSString *)filePath {
+    
+    NSFileManager *manager = [NSFileManager defaultManager];
+           
+    return [manager createFileAtPath:filePath contents:nil attributes:nil];
+    
+}
+
 
 ///检查路径，并创建文件夹
 -(BOOL)checkFolderExists:(NSString *)folderPath {
@@ -94,7 +130,7 @@
 }
 
 ///通过路径创建文件夹
--(BOOL)createFolderByPath:(NSString *)folderPath {
+-(BOOL)createFolder:(NSString *)folderPath {
 
     return [self checkFolderExists:folderPath];
     
@@ -166,24 +202,24 @@
     return filePath;
 }
 
-///获取目标路径
-+(NSString *)getObjectPath:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName {
-    
-    NSString *rootPath = [self getSandboxFolder:sandBoxFolderType];
-    
-    NSString *folderPath = [rootPath stringByAppendingPathComponent:folderRelativePath];
-    
-    NSString *filePath = @"";
-    
-    if(fileName == nil || [fileName isEqualToString:@""]) {
-        
-        filePath = folderPath;
-        
-    }else {
-        filePath = [folderPath stringByAppendingPathComponent:fileName];
-    }
-    return filePath;
-}
+/////获取目标路径
+//+(NSString *)getObjectPath:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName {
+//
+//    NSString *rootPath = [self getSandboxFolder:sandBoxFolderType];
+//
+//    NSString *folderPath = [rootPath stringByAppendingPathComponent:folderRelativePath];
+//
+//    NSString *filePath = @"";
+//
+//    if(fileName == nil || [fileName isEqualToString:@""]) {
+//
+//        filePath = folderPath;
+//
+//    }else {
+//        filePath = [folderPath stringByAppendingPathComponent:fileName];
+//    }
+//    return filePath;
+//}
 
 ///删除文件
 -(BOOL)removeFile:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName {
@@ -193,6 +229,31 @@
     return [self removeFile:filePath];
 }
 
+///删除文件夹
+-(BOOL)removeFolder:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath folderName:(NSString *)folderName {
+    
+    NSString *folderPath = [self getObjectPath:sandBoxFolderType folderRelativePath:folderRelativePath fileName:folderName];
+    
+    return [self removeFolder:folderPath];
+    
+}
+
+///删除文件夹
+-(BOOL)removeFolder:(NSString *)folderPath {
+    
+    NSFileManager *manager = [NSFileManager defaultManager];
+    
+    NSError *error = nil;
+       
+    BOOL status = NO;
+       
+    status = [manager removeItemAtPath:folderPath error:&error];
+       
+    return status;
+}
+
+
+
 ///删除文件
 -(BOOL)removeFile:(NSString *)filePath {
     
@@ -200,11 +261,35 @@
        
     NSError *error = nil;
        
-    BOOL status = nil;
+    BOOL status = NO;
        
     status = [manager removeItemAtPath:filePath error:&error];
        
     return status;
+}
+
+#pragma mark -
+
++(instancetype)allocWithZone:(struct _NSZone *)zone
+{
+    @synchronized (self) {
+        
+        if (fileHandle == nil) {
+            fileHandle = [super allocWithZone:zone];
+        }
+        return fileHandle;
+    }
+    
+}
+
+-(id)copyWithZone:(NSZone *)zone{
+    
+    return fileHandle;
+}
+
+-(id)mutableCopyWithZone:(NSZone *)zone{
+    
+    return fileHandle;
 }
 
 @end

@@ -89,13 +89,19 @@ typedef NS_ENUM(NSInteger,RequestStatusCode){
 ///CSToolKIt 用于文本缓存的专用文件夹
 #define CSToolKitFolder @"CSToolKitFolder"
 
+///模型序列化文件夹
+#define ModelArchiveFolder @"ModelArchiveFolder"
+
+///数据库文件夹
+#define DataBaseFolder @"DataBaseFolder"
+
 ///POSTForm表单请求标识
 #define Post_Form_Identifer @"CSToolKitFormRequest"
 
-///模型序列化文件夹
-#define ModelArchiveFolder @"ModelArchiveFolder"
+
 
 ///POSTForm表单中的隔离线
 #define Post_Form_Line @"\r\n"
 
 #endif /* CSPch_h */
+

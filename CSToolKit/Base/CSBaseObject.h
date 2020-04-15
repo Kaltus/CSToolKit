@@ -96,6 +96,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 +(NSDictionary *)getDictionaryForGenericsInModel;
 
++(NSString *)getPrimaryKey;
 
 @end
 

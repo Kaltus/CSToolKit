@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CSBaseModel :CSFileHandle  <NSSecureCoding>
+@interface CSBaseModel :CSBaseObject  <NSSecureCoding>
 
 + (BOOL) supportsSecureCoding;
 

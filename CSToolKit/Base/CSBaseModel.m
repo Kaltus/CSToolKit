@@ -84,13 +84,13 @@
 -(BOOL)modelSerialization:(NSString *)fileName
 {
     
-    BOOL flag = [self createFolder:FolderCachesType folderRelativePath:CSToolKitFolder folderName:ModelArchiveFolder];
+    BOOL flag = [[CSFileHandle shareSingleCase] createFolder:FolderCachesType folderRelativePath:CSToolKitFolder folderName:ModelArchiveFolder];
     
     BOOL result = NO;
     
     if (flag) {
         
-        NSString *folderPath = [self getObjectPath:FolderCachesType folderRelativePath:CSToolKitFolder fileName:ModelArchiveFolder];
+        NSString *folderPath = [[CSFileHandle shareSingleCase] getObjectPath:FolderCachesType folderRelativePath:CSToolKitFolder fileName:ModelArchiveFolder];
         
         NSString *filePath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.data",fileName]];
         
@@ -127,7 +127,8 @@
 /// 反序列化，通过文件名从沙盒中取出模型
 +(id)modelDeserialization:(NSString *)fileName {
 
-    NSString *folderPath = [self getObjectPath:FolderCachesType folderRelativePath:CSToolKitFolder fileName:ModelArchiveFolder];
+    NSString *folderPath = [[CSFileHandle shareSingleCase] getObjectPath:FolderCachesType folderRelativePath:CSToolKitFolder fileName:ModelArchiveFolder];
+    
     NSString *filePath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.data",fileName]];
     
     if (CS_SystemVersion >= 12.0) {

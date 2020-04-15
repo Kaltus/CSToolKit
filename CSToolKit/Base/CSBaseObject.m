@@ -255,4 +255,8 @@
     return [NSDictionary dictionary];
 }
 
++(NSString *)getPrimaryKey {
+    return @"";
+}
+
 @end
