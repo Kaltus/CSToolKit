@@ -53,6 +53,7 @@
 
                 if (Generics.allKeys.count > 0) {
 
+                    long double test = 1.000000005;
                     [dataMutableDict setObject:[NSClassFromString([Generics objectForKey:[obj objectForKey:PropertyName]]) dictsEncapsulationAsModels:content] forKey:[obj objectForKey:PropertyName]];
 
                 }else {
@@ -303,4 +304,3 @@
 //}
 
 @end
-

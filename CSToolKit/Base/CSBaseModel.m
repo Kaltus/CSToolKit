@@ -94,7 +94,7 @@
         
         NSString *filePath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.data",fileName]];
         
-        if (CS_SystemVersion >= 12.0) {
+        if (SystemVersion >= 12.0) {
             
             NSError *error;
             
@@ -131,7 +131,7 @@
     
     NSString *filePath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.data",fileName]];
     
-    if (CS_SystemVersion >= 12.0) {
+    if (SystemVersion >= 12.0) {
         
         NSError *error;
         
