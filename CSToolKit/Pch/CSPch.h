@@ -42,39 +42,38 @@ typedef NS_ENUM(NSInteger,RequestStatusCode){
  */
 #define CSLog(whetherShow,fmt, ...) if(whetherShow == YES) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
 
-///NULL 和 nil 转换为空字符串
-#define CS_EmptyTransformNilwithNull(value) ({id tmp; if ([value isKindOfClass:[NSNull class]]||value==nil) tmp =@""; else tmp = value; tmp;})
-
 ///获取系统版本号
-#define CS_SystemVersion [[UIDevice currentDevice] systemVersion].floatValue
+#define SystemVersion [[UIDevice currentDevice] systemVersion].floatValue
 
 ///屏幕宽度
-#define CS_SCREN_WIDTH   [UIScreen mainScreen].bounds.size.width
+#define SCREN_WIDTH   [UIScreen mainScreen].bounds.size.width
 
 ///屏幕高度
-#define CS_SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
+#define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 
 ///获取一个视图的X坐标
-#define CS_Origin_X(view) view.frame.origin.x
+#define Origin_X(view) view.frame.origin.x
 
 ///获取一个视图的Y坐标
-#define CS_Origin_Y(view) view.frame.origin.y
+#define Origin_Y(view) view.frame.origin.y
 
 ///获取视图宽
-#define CS_Size_Width(view) view.frame.size.width
+#define Size_Width(view) view.frame.size.width
 
 ///获取视图的高
-#define CS_Size_Height(view) view.frame.size.height
+#define Size_Height(view) view.frame.size.height
 
 ///计算视图X+width
-#define CS_Frame_SIZE_SCREEN_END_X(view) view.frame.origin.x+view.frame.size.width
+#define Frame_SIZE_SCREEN_END_X(view) view.frame.origin.x+view.frame.size.width
 
 ///计算视图Y+height
-#define CS_Frame_SIZE_SCREEN_END_Y(view) view.frame.origin.y+view.frame.size.height
+#define Frame_SIZE_SCREEN_END_Y(view) view.frame.origin.y+view.frame.size.height
 
 ///获取Cache目录
 #define GetCacheDir NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject
 
+///NULL 和 nil 转换为空字符串
+#define NullOrNilConvertEmptyString(value) ({id tmp; if ([value isKindOfClass:[NSNull class]]||value==nil) tmp = @""; else tmp = value; tmp;})
 /*****************************************属性区域*********************************************/
 
 ///读取属性名
@@ -97,8 +96,6 @@ typedef NS_ENUM(NSInteger,RequestStatusCode){
 
 ///POSTForm表单请求标识
 #define Post_Form_Identifer @"CSToolKitFormRequest"
-
-
 
 ///POSTForm表单中的隔离线
 #define Post_Form_Line @"\r\n"

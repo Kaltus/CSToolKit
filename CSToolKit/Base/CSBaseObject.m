@@ -22,7 +22,7 @@
     
     id model = [[self alloc]init];
     
-    NSMutableDictionary *dataMutableDict = [[NSMutableDictionary alloc]initWithDictionary:dataDict];
+    NSMutableDictionary *dataMutableDict = [[NSMutableDictionary alloc]init];
     
     NSArray *propertys = [self getPropertys];
     
@@ -30,14 +30,41 @@
         
         [propertys enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
               
+            id content = [dataDict objectForKey:[obj objectForKey:PropertyName]];
+                       
+            if ([content isKindOfClass:[NSNull class]] || content == nil) {
+                content = [[NSClassFromString([obj objectForKey:PropertyType]) alloc] init];
+            }
+            
             if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[CSBaseObject class]]) {
-                
-                [dataMutableDict setValue:[NSClassFromString([obj objectForKey:PropertyType]) dictEncapsulationAsModel:[dataMutableDict objectForKey:[obj objectForKey:PropertyName]]] forKey:[obj objectForKey:PropertyName]];
+
+               if ([[content class] isSubclassOfClass:[CSBaseObject class]]) {
+                    
+                    [dataMutableDict setObject:content forKey:[obj objectForKey:PropertyName]];
+                    
+                }else {
+                    
+                    [dataMutableDict setObject:NullOrNilConvertEmptyString([NSClassFromString([obj objectForKey:PropertyType]) dictEncapsulationAsModel:content]) forKey:[obj objectForKey:PropertyName]];
+                }
+
             }else if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSArray class]] || [NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSMutableArray class]]) {
-                
-                [dataMutableDict setValue:[NSClassFromString([[[self class] getDictionaryForGenericsInModel] objectForKey:[obj objectForKey:PropertyName]]) dictsEncapsulationAsModels:[dataMutableDict objectForKey:[obj objectForKey:PropertyName]]] forKey:[obj objectForKey:PropertyName]];
-                
-                
+
+                NSDictionary *Generics = [[self class] getDictionaryForGenericsInModel];
+
+                if (Generics.allKeys.count > 0) {
+
+                    [dataMutableDict setObject:[NSClassFromString([Generics objectForKey:[obj objectForKey:PropertyName]]) dictsEncapsulationAsModels:content] forKey:[obj objectForKey:PropertyName]];
+
+                }else {
+
+                    NSLog(@"未重写 %@ 类中的静态方法 getDictionaryForGenericsInModel",[self class]);
+                    [dataMutableDict setObject:content forKey:[obj objectForKey:PropertyName]];
+
+                }
+
+            }else {
+
+                [dataMutableDict setObject:NullOrNilConvertEmptyString(content) forKey:[obj objectForKey:PropertyName]];
             }
             
         }];
@@ -58,37 +85,48 @@
            
         [propertys enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                  
-            id content = nil;
+            id content = [dataDict objectForKey:[obj objectForKey:PropertyName]];
+            
+            if ([content isKindOfClass:[NSNull class]] || content == nil) {
+                content = [[NSClassFromString([obj objectForKey:PropertyType]) alloc] init];
+            }
             
             if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[CSBaseObject class]]) {
-                      
                 
-                content = [NSClassFromString([obj objectForKey:PropertyType]) dictEncapsulationAsModel:[dataDict objectForKey:[obj objectForKey:PropertyName]]];
-                
-                [dataMutableDict setValue:content forKey:[obj objectForKey:PropertyName]];
-                
-            }else if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSArray class]] || [NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSMutableArray class]]) {
-                
-                content = [NSClassFromString([[[self class] getDictionaryForGenericsInModel] objectForKey:[obj objectForKey:PropertyName]]) dictsEncapsulationAsModels:[dataDict objectForKey:[obj objectForKey:PropertyName]]];
-                
-                [dataMutableDict setValue:content forKey:[obj objectForKey:PropertyName]];
-                
-            }else {
-                
-                content = [dataDict objectForKey:[obj objectForKey:PropertyName]];
-                           
-                if (content != nil) {
-                     [dataMutableDict setValue:content forKey:[obj objectForKey:PropertyName]];
+                if ([[content class] isSubclassOfClass:[CSBaseObject class]]) {
+                    
+                    [dataMutableDict setObject:content forKey:[obj objectForKey:PropertyName]];
+                    
+                }else {
+                    
+                    [dataMutableDict setObject:NullOrNilConvertEmptyString([NSClassFromString([obj objectForKey:PropertyType]) dictEncapsulationAsModel:content]) forKey:[obj objectForKey:PropertyName]];
                 }
                 
+            }else if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSArray class]] || [NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSMutableArray class]]) {
+
+                NSDictionary *Generics = [[self class] getDictionaryForGenericsInModel];
+
+                if (Generics.allKeys.count > 0) {
+
+                    [dataMutableDict setObject:[NSClassFromString([Generics objectForKey:[obj objectForKey:PropertyName]]) dictsEncapsulationAsModels:content] forKey:[obj objectForKey:PropertyName]];
+
+                }else {
+
+                    NSLog(@"未重写 %@ 类中的静态方法 getDictionaryForGenericsInModel",[self class]);
+                    [dataMutableDict setObject:NullOrNilConvertEmptyString(content) forKey:[obj objectForKey:PropertyName]];
+
+                }
+
+            }else {
+
+                [dataMutableDict setObject:NullOrNilConvertEmptyString(content) forKey:[obj objectForKey:PropertyName]];
+
             }
 
         }];
     }
        
     [self setValuesForKeysWithDictionary:dataMutableDict.copy];
-    
-    
 }
 
 ///模型属性拼接Get Url 链接
@@ -142,18 +180,24 @@
         
         [propertys enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
            
+            id content = [self valueForKey:[obj objectForKey:PropertyName]];
+            
+            if ([content isKindOfClass:[NSNull class]] || content == nil) {
+                content = [[NSClassFromString([obj objectForKey:PropertyType]) alloc] init];
+            }
+            
             if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[CSBaseObject class]]) {
             
-                 [mutableDict setObject:[[self valueForKey:[obj objectForKey:PropertyName]] modelEncapsulationAsDict] forKey:[obj objectForKey:PropertyName]];
+                 [mutableDict setObject:[content modelEncapsulationAsDict] forKey:[obj objectForKey:PropertyName]];
             
             }else if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSArray class]] || [NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSMutableArray class]]) {
                 
-                [mutableDict setValue:[self modelsEncapsulationAsDicts:[self valueForKey:[obj objectForKey:PropertyName]]] forKey:[obj objectForKey:PropertyName]];
+                [mutableDict setValue:[self modelsEncapsulationAsDicts:content] forKey:[obj objectForKey:PropertyName]];
                 
             }
             else {
                                 
-                [mutableDict setValue:[self valueForKey:[obj objectForKey:PropertyName]] forKey:[obj objectForKey:PropertyName]];
+                [mutableDict setValue:content forKey:[obj objectForKey:PropertyName]];
                 
             }
             
@@ -175,7 +219,6 @@
             [mutableArray addObject:[obj modelEncapsulationAsDict]];
             
         }];
-        
     }
     
     return mutableArray.copy;
@@ -255,8 +298,9 @@
     return [NSDictionary dictionary];
 }
 
-+(NSString *)getPrimaryKey {
-    return @"";
-}
+//+(NSString *)getPrimaryKey {
+//    return @"";
+//}
 
 @end
+

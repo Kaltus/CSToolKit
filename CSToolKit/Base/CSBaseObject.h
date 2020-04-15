@@ -92,12 +92,18 @@ NS_ASSUME_NONNULL_BEGIN
 /*
  * @description 获取一个字典，这个字典是模型中的泛型数组的集合
  * @return 返回一个类型数组
- * @remark 当继承自 CSBaseModel 中的属性含有模型数组的时候。必须在该类中实现这个静态方法。@{@"数组的泛型字符串":@"模型中的属性名"} eg:@property (nonatomic,strong) NSArray<TestModel1 *> *testArray; 在模型类的.m中 实现getDictionaryForGenericsInModel 并 return @{@"testArray":@"TestModel1"};
+ * @remark 当继承自 CSBaseModel 中的属性含有模型数组的时候。必须在该类中重写这个静态方法。并 return @{@"数组的泛型字符串":@"模型中的属性名"} eg:@property (nonatomic,strong) NSArray<TestModel1 *> *testArray; 在模型类的.m中 实现getDictionaryForGenericsInModel 并 return @{@"testArray":@"TestModel1"};
  */
 +(NSDictionary *)getDictionaryForGenericsInModel;
 
-+(NSString *)getPrimaryKey;
+/*
+ * @description 模型对应数据库中的主键
+ * @return 主键名
+ * @remark 模型数据库操作咱不能使用
+ */
+//+(NSString *)getPrimaryKey;
 
 @end
 
 NS_ASSUME_NONNULL_END
+
