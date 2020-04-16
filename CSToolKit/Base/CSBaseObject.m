@@ -8,6 +8,12 @@
 
 #import "CSBaseObject.h"
 
+@interface CSBaseObject()
+
+@property (nonatomic,strong)dispatch_queue_t queue;
+
+@end
+
 @implementation CSBaseObject
 
 ///快速初始化
@@ -53,7 +59,6 @@
 
                 if (Generics.allKeys.count > 0) {
 
-                    long double test = 1.000000005;
                     [dataMutableDict setObject:[NSClassFromString([Generics objectForKey:[obj objectForKey:PropertyName]]) dictsEncapsulationAsModels:content] forKey:[obj objectForKey:PropertyName]];
 
                 }else {
@@ -292,6 +297,15 @@
     }
     
     return jsonDict;
+}
+
+#pragma mark - Getter or Setter
+
+-(dispatch_queue_t)queue {
+    if (!_queue) {
+        _queue = dispatch_queue_create("com.cstoolkit.queue", DISPATCH_QUEUE_SERIAL);
+    }
+    return _queue;
 }
 
 ///获取字典 获取一个字典，这个字典是模型中的泛型数组的集合 此方法如果在模型中有模型数组，必须在模型中实现

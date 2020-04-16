@@ -103,6 +103,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 //+(NSString *)getPrimaryKey;
 
+-(dispatch_queue_t)queue;
+
 @end
 
 NS_ASSUME_NONNULL_END
