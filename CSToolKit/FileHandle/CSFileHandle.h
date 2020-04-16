@@ -10,24 +10,30 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-///文件路径类型
-typedef NS_ENUM(NSInteger,SandBoxFolderType) {
-    
-    ///Document 目录
-    FolderDocumentType = 0,
-    
-    ///Library 目录
-    FolderLibraryTye ,
-    
-    ///Library 目录中的Caches 目录
-    FolderCachesType,
-    
-    ///Temp 目录
-    FolderTempType
-    
-};
+@protocol CSFileHandleDelegate <NSObject>
+
+/*
+ * @description 保存文件完成代理方法
+ * @param fileName 文件名称
+ * @param saveFileStatus 保存文件状态
+ * @param message 保存文件返回消息
+ */
+-(void)saveFileComplete:(NSString *)fileName saveFileStatus:(SaveFileStatus)saveFileStatus message:(NSString *)message;
+
+/*
+ * @description 读取文件完成代理方法
+ * @param fileName 文件名
+ * @param readFileStatus 读取文件状态
+ * @param message 读取文件信息
+ */
+-(void)readFileComplete:(NSData *)fileData fileName:(NSString *)fileName readFileStatus:(ReadFileStatus)readFileStatus message:(NSString *)message;
+
+@end
 
 @interface CSFileHandle : CSBaseObject
+
+///委托对象
+@property (nonatomic,weak) id<CSFileHandleDelegate> delegate;
 
 /*
  * @description 单例外部共享方法
@@ -117,7 +123,7 @@ typedef NS_ENUM(NSInteger,SandBoxFolderType) {
  * @param fileName 文件名称
  * @return 文件缓存是否成功
  */
--(BOOL)saveFileToSandbox:(NSData *)fileData sandBoxFolderType:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName;
+-(void)saveFileToSandbox:(NSData *)fileData sandBoxFolderType:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName;
 
 /*
  * @description 删除文件夹
@@ -158,14 +164,14 @@ typedef NS_ENUM(NSInteger,SandBoxFolderType) {
  * @param fileName 文件名称
  * @return 读取到的文件数据
  */
--(NSData *)readFileDataFromSandBox:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName;
+-(void)readFileDataFromSandBox:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName;
 
 /*
  * @description 通过路径读取文件数据
  * @param filePath 文件路径
  * @return 读取到的文件数据
  */
--(NSData *)readFileData:(NSString *)filePath;
+-(void)readFileData:(NSString *)filePath;
 
 
 @end

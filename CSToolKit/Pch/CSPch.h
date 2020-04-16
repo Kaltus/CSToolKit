@@ -34,6 +34,51 @@ typedef NS_ENUM(NSInteger,RequestStatusCode){
     RequestUnsual = 5
 };
 
+///文件路径类型
+typedef NS_ENUM(NSInteger,SandBoxFolderType) {
+    
+    ///Document 目录
+    FolderDocumentType = 0,
+    
+    ///Library 目录
+    FolderLibraryTye ,
+    
+    ///Library 目录中的Caches 目录
+    FolderCachesType,
+    
+    ///Temp 目录
+    FolderTempType
+    
+};
+
+typedef NS_ENUM(NSInteger,SaveFileStatus) {
+    
+    ///保存文件成功
+    SaveFileSucess ,
+    
+    ///保存文件失败
+    SaveFileFailed
+    
+};
+
+typedef NS_ENUM(NSInteger,ReadFileStatus) {
+    
+    ///读取数据成功
+    ReadFileSucess ,
+    
+    ///读取数据失败
+    ReadFileFailed
+};
+
+///下载请求状态
+typedef NS_ENUM(NSInteger,DownloadRequestStatus) {
+    
+    DownloadSucess ,
+    
+    DownloadFailed
+    
+};
+
 /*****************************************功能区域*********************************************/
 /*
  * 打印宏
@@ -101,3 +146,4 @@ typedef NS_ENUM(NSInteger,RequestStatusCode){
 #define Post_Form_Line @"\r\n"
 
 #endif /* CSPch_h */
+

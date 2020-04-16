@@ -11,6 +11,7 @@
 #import "CSPch.h"
 #import "CSSingleCase.h"
 #import "CSBaseModel.h"
+#import "RequestModel.h"
 
 @interface CSRequest ()<NSURLSessionDelegate>
 
@@ -20,89 +21,97 @@
 ///请求任务
 @property (nonatomic,strong) NSURLSessionDataTask *sessionTask;
 
-///返回数据
-@property (nonatomic,strong) NSMutableData *reciveData;
+///请求模型数组
+@property (nonatomic,strong) NSMutableArray *requestArray;
 
-///委托
-@property (nonatomic,assign) id target;
-
-///代理方法
-@property (nonatomic,assign) SEL action;
-
+///请求标识
+@property (nonatomic,assign) NSInteger requestIdentifer;
 
 @end
+
 
 @implementation CSRequest
 
 #pragma mark - Func
-
 ///Post 请求s
 -(BOOL)postRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl parameter:(id)parameter {
+    
+    RequestModel *requestModel = [RequestModel CSInit];
     
     if (target == nil) {
         return NO;
     }
-    
-    self.target = target;
-    
+
+    requestModel.target = target;
     if (action == nil) {
-        
+
         return NO;
-        
+
     }
-    self.action = action;
-    
+    requestModel.action = action;
+
     if (requestUrl == nil || [requestUrl isEqualToString:@""]) {
-        
-        if ([self.target respondsToSelector:self.action]) {
-        
-            ((void (*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *)) objc_msgSend)(self.target,self.action,RequestLinkUrlUnusual,[NSDictionary dictionary],@"请求Url为空");
+
+        if ([requestModel.target respondsToSelector:requestModel.action]) {
+
+            ((void (*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,RequestLinkUrlUnusual,[NSDictionary dictionary],@"请求Url为空");
         }
         return NO;
     }
     
-     NSURL *Url = [NSURL URLWithString:requestUrl];
+    requestModel.requestUrl = requestUrl;
     
+    NSURL *Url = [NSURL URLWithString:requestUrl];
+
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:Url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:self.timeOut==0?60:self.timeOut];
     request.HTTPMethod = @"POST";
-    
+
     [request setValue:self.contentType.length==0?@"application/json":self.contentType forHTTPHeaderField:@"Content-Type"];
-    
+
     if ([parameter isKindOfClass:[CSBaseModel class]]) {
-        
+
         request.HTTPBody = [[parameter modelConvertJsonString] dataUsingEncoding:NSUTF8StringEncoding];
-        
+
     }else if ([parameter isKindOfClass:[NSDictionary class]] || [parameter isKindOfClass:[NSMutableDictionary class]]) {
-        
+
         request.HTTPBody = [[[NSDictionary dictionaryWithDictionary:parameter] dictConvertJson] dataUsingEncoding:NSUTF8StringEncoding];
 
     }else if(parameter == nil){
-        
+
         CSLog([CSSingleCase shareSingleCase].CSUsualKitShowLog, @"传入参数为空");
-        
+
     }else{
-        
-        if ([self.target respondsToSelector:self.action]) {
-        
-            ((void (*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *)) objc_msgSend)(self.target,self.action,RequestParameterUnusual,[NSDictionary dictionary],@"请求参数错误");
-            
+
+        if ([requestModel.target respondsToSelector:requestModel.action]) {
+
+            ((void (*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,RequestParameterUnusual,[NSDictionary dictionary],@"请求参数错误");
+            return NO;
         }
-        
+
     }
+
+   requestModel.parameter = parameter;
+       
+    [self.requestArray addObject:requestModel];
     
     if ([CSSingleCase shareSingleCase].usingCookie) {
-        
+
         NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:[[CSSingleCase shareSingleCase].cookieModel modelEncapsulationAsDict]];
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
-        
+
     }
+
+    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+    queue.name = [NSString stringWithFormat:@"%li",(long)self.requestIdentifer];
+    requestModel.identifer = [NSString stringWithFormat:@"%li",(long)self.requestIdentifer];
     
-    self.session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[[NSOperationQueue alloc]init]];
-    
+    self.session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:queue];
+
     self.sessionTask = [self.session dataTaskWithRequest:request];
-    
+
     [self.sessionTask resume];
     
+    self.requestIdentifer ++;
     
     return YES;
 }
@@ -110,27 +119,32 @@
 /// Get 请求
 -(BOOL)getRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl parameter:(id)parameter {
     
+    RequestModel *requestModel = [RequestModel CSInit];
+    
     if (target == nil) {
         return NO;
     }
     
-    self.target = target;
+    requestModel.target = target;
     
     if (action == nil) {
         
         return NO;
         
     }
-    self.action = action;
+
+    requestModel.action = action;
     
     if (requestUrl == nil || [requestUrl isEqualToString:@""]) {
         
-        if ([self.target respondsToSelector:self.action]) {
+        if ([requestModel.target respondsToSelector:requestModel.action]) {
         
-            ((void (*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *)) objc_msgSend)(self.target,self.action,RequestLinkUrlUnusual,[NSDictionary dictionary],@"请求Url为空");
+            ((void (*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,RequestLinkUrlUnusual,[NSDictionary dictionary],@"请求Url为空");
         }
         return NO;
     }
+    
+    requestModel.requestUrl = requestUrl;
     
     if (parameter != nil) {
         
@@ -158,20 +172,20 @@
             }else
             {
                 
-                if ([self.target respondsToSelector:self.action]) {
-                    ((void (*)(id, SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(self.target, self.action,RequestParameterUnusual,[NSDictionary dictionary],@"请求参数异常");
+                if ([requestModel.target respondsToSelector:requestModel.action]) {
+                    ((void (*)(id, SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(requestModel.target, requestModel.action,RequestParameterUnusual,[NSDictionary dictionary],@"请求参数异常");
                 }
             
                 return NO;
             }
-    
+        
     }else {
         
         CSLog([CSSingleCase shareSingleCase].CSUsualKitShowLog, @"传入参数为空");
         
     }
     
-    self.reciveData = [[NSMutableData alloc]init];
+    requestModel.parameter = parameter;
     
     NSURL *URL = [NSURL URLWithString:requestUrl];
     
@@ -186,9 +200,13 @@
     
     request.HTTPMethod = @"GET";
     
+    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+    queue.name = [NSString stringWithFormat:@"%li",(long)self.requestIdentifer];
+    requestModel.identifer = [NSString stringWithFormat:@"%li",(long)self.requestIdentifer];
+    
     self.session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
                                                  delegate:self
-                                            delegateQueue:[[NSOperationQueue alloc]init]];
+                                            delegateQueue:queue];
     
     self.sessionTask = [self.session dataTaskWithRequest:request];
     
@@ -218,13 +236,38 @@
 
 /// 接收到服务器的数据（此方法在接收数据过程会多次调用）
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
+
+    __block RequestModel *requestModel = nil;
+       
+       [self.requestArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+          
+           RequestModel *model = obj;
+           
+           if ([model.identifer isEqualToString:session.delegateQueue.name]) {
+               requestModel = model;
+           }
+           
+       }];
     
-    [self.reciveData appendData:data];
+    [requestModel.reciveData appendData:data];
+    
     
 }
 
 /// 任务完成时调用（如果成功，error == nil）
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    
+    __block RequestModel *requestModel = nil;
+    
+    [self.requestArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+       
+        RequestModel *model = obj;
+        
+        if ([model.identifer isEqualToString:session.delegateQueue.name]) {
+            requestModel = model;
+        }
+        
+    }];
     
         dispatch_async(dispatch_get_main_queue(), ^{
             
@@ -250,28 +293,28 @@
                 
                 @try {
                     
-                    dataDict = [NSJSONSerialization JSONObjectWithData:self.reciveData options:NSJSONReadingMutableLeaves error:nil];
+                    dataDict = [NSJSONSerialization JSONObjectWithData:requestModel.reciveData options:NSJSONReadingMutableLeaves error:nil];
                     
                 } @catch (NSException *exception) {
                     
-                    if ([self.target respondsToSelector:self.action]) {
-                        ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(self.target,self.action,RequestDataAnalysisUnusal,nil,@"数据解析异常");
+                    if ([requestModel.target respondsToSelector:requestModel.action]) {
+                        ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(requestModel.target,requestModel.action,RequestDataAnalysisUnusal,nil,@"数据解析异常");
                     }
                     
                 } @finally {
                     
-                    if ([self.target respondsToSelector:self.action]) {
+                    if ([requestModel.target respondsToSelector:requestModel.action]) {
                         
-                        ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(self.target,self.action,RequestSuccessful,dataDict,@"请求通过，获取数据成功");
+                        ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(requestModel.target,requestModel.action,RequestSuccessful,dataDict,@"请求通过，获取数据成功");
                         
                     }
                 }
                 
             }else {
                 
-                if ([self.target respondsToSelector:self.action]) {
+                if ([requestModel.target respondsToSelector:requestModel.action]) {
                     
-                    ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(self.target,self.action,RequestUnsual,[NSDictionary dictionary],error.userInfo.description);
+                    ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(requestModel.target,requestModel.action,RequestUnsual,[NSDictionary dictionary],error.userInfo.description);
                     
                 }
                 
@@ -282,13 +325,15 @@
 
 #pragma mark - Getter or Setter
 
-
--(NSMutableData *)reciveData {
+-(NSMutableArray *)requestArray {
     
-    if (!_reciveData) {
-        _reciveData = [[NSMutableData alloc]init];
+    if (!_requestArray) {
+        _requestArray = [[NSMutableArray alloc]init];
     }
-    return _reciveData;
+    return _requestArray;
 }
+
+#pragma mark -
+
 
 @end
