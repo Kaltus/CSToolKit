@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 * @param parameter 请求参数
 * @return 请求是否通过本地校验
 */
--(BOOL)postFormRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl parameter:(id)parameter;
+//-(BOOL)postFormRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl parameter:(id)parameter;
 @end
 
 NS_ASSUME_NONNULL_END
