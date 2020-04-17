@@ -10,7 +10,7 @@
 
 @interface CSBaseObject()
 
-@property (nonatomic,strong)dispatch_queue_t queue;
+@property (nonatomic,strong) dispatch_queue_t queue;
 
 @end
 

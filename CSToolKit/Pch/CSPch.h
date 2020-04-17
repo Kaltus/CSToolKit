@@ -61,6 +61,23 @@ typedef NS_ENUM(NSInteger,SaveFileStatus) {
     
 };
 
+///文件类型
+typedef NS_ENUM(NSInteger,FileType) {
+    
+    ///公共文件夹类型
+    FilePublicType ,
+    
+    ///图片文件类型
+    FileImageType ,
+    
+    ///音频文件类型
+    FileVoiceType ,
+    
+    ///视频文件类型
+    FileVideotype
+    
+};
+
 typedef NS_ENUM(NSInteger,ReadFileStatus) {
     
     ///读取数据成功
@@ -130,14 +147,28 @@ typedef NS_ENUM(NSInteger,DownloadRequestStatus) {
 ///读取属性值
 #define PropertyValue @"PropertyValue"
 
-///CSToolKIt 用于文本缓存的专用文件夹
+///CSToolKIt 用于缓存的文件夹
 #define CSToolKitFolder @"CSToolKitFolder"
 
+///附件缓存文件夹
+#define FileFolder @"FileFolder"
+
+#define PublicFolder @"CSToolKitFolder/FileFolder/PublicFolder"
+
+///图片缓存文件夹
+#define ImageFolder @"CSToolKitFolder/FileFolder/ImageFolder"
+
+///音频缓存文件夹
+#define VoiceFolder @"CSToolKitFolder/FileFolder/VoiceFolder"
+
+///视频缓存文件夹
+#define VideoFolder @"CSToolKitFolder/FileFolder/VideoFolder"
+
 ///模型序列化文件夹
-#define ModelArchiveFolder @"ModelArchiveFolder"
+#define ModelArchiveFolder @"CSToolKitFolder/ModelArchiveFolder"
 
 ///数据库文件夹
-#define DataBaseFolder @"DataBaseFolder"
+#define DataBaseFolder @"CSToolKitFolder/FileFolder/DataBaseFolder"
 
 ///POSTForm表单请求标识
 #define Post_Form_Identifer @"CSToolKitFormRequest"
@@ -146,4 +177,3 @@ typedef NS_ENUM(NSInteger,DownloadRequestStatus) {
 #define Post_Form_Line @"\r\n"
 
 #endif /* CSPch_h */
-

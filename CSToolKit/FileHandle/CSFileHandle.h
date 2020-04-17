@@ -116,6 +116,12 @@ NS_ASSUME_NONNULL_BEGIN
 -(BOOL)checkFolderExists:(NSString *)folderPath;
 
 /*
+ * @description 检查文件是否存在
+ * @param filePath 文件路径
+ * @return yes 已经存在  no 不存在
+ */
+-(BOOL)checkFileExists:(NSString *)filePath;
+/*
  * @description 保存文件到沙盒中
  * @param fileData 文件数据
  * @param sandBoxFolderType 沙盒目录类型

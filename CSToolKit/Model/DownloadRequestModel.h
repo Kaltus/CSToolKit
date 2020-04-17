@@ -21,6 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///保存的文件路径
 @property (nonatomic,copy) NSString *filePath;
 
+///是否覆盖
+@property (nonatomic,assign) BOOL isCover;
+
 @end
 
 NS_ASSUME_NONNULL_END

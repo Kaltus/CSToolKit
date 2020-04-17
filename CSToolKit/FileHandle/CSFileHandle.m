@@ -129,6 +129,14 @@ static CSFileHandle *fileHandle = nil;
     
 }
 
+///检查文件是否存在
+-(BOOL)checkFileExists:(NSString *)filePath {
+    
+    NSFileManager *manager = [NSFileManager defaultManager];
+       
+    return [manager fileExistsAtPath:filePath];
+}
+
 ///通过路径创建文件夹
 -(BOOL)createFolder:(NSString *)folderPath {
 
