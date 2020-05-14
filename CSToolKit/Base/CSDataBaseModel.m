@@ -8,7 +8,7 @@
 
 #import "CSDataBaseModel.h"
 #import <sqlite3.h>
-#import "CSFileHandle.h"
+#import "CSFileManager.h"
 
 @interface CSDataBaseModel ()
 
@@ -33,26 +33,26 @@ static sqlite3 *db = nil;
 ///创建表
 -(void)createDatabaseTable {
     
-    NSString *path = [[CSFileHandle shareSingleCase] getObjectPath:FolderCachesType folderRelativePath:CSToolKitFolder fileName:DataBaseFolder];
+//    NSString *path = [[CSFileManager shareSingleCase] getObjectPath:FolderCachesType folderRelativePath:CSToolKitFolder fileName:DataBaseFolder];
     
-    if ([self openDataBase:path dbName:@"test.sqlite"]) {
-        
-        NSArray *propertys = [self getPropertys];
-        
-        NSLog(@"---------");
-        
-
-        
+//    NSString *path = [[CSFileManager shareSingleCase] get]
     
-        
-        
-    }else {
-        NSLog(@"+++++++++++++");
-    }
-    
-//    if ([self openDataBase:[CSFileHandle shareSingleCase]] dbName:<#(NSString *)#>]) {
-//        <#statements#>
+//    if ([self openDataBase:path dbName:@"test.sqlite"]) {
+//        
+//        NSArray *propertys = [self getPropertys];
+//        
+//        NSLog(@"---------");
+//        
+//
+//        
+//    
+//        
+//        
+//    }else {
+//        NSLog(@"+++++++++++++");
 //    }
+    
+
     
     
 }

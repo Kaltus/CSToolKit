@@ -56,8 +56,13 @@ typedef NS_ENUM(NSInteger,SaveFileStatus) {
     ///保存文件成功
     SaveFileSucess ,
     
+    ///文件已经存在
+    SaveFileExist ,
+    
     ///保存文件失败
     SaveFileFailed
+    
+    
     
 };
 

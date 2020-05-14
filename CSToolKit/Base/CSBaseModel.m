@@ -84,15 +84,20 @@
 -(BOOL)modelSerialization:(NSString *)fileName
 {
     
-    BOOL flag = [[CSFileHandle shareSingleCase] createFolder:FolderCachesType folderRelativePath:CSToolKitFolder folderName:ModelArchiveFolder];
+//    BOOL flag = [[CSFileHandle shareSingleCase] createFolder:FolderCachesType folderRelativePath:CSToolKitFolder folderName:ModelArchiveFolder];
+    
+    BOOL flag = [[CSFileManager shareSingleCase] createFolder:FolderCachesType folderRelativePath:CSToolKitFolder folderName:ModelArchiveFolder];
     
     BOOL result = NO;
     
     if (flag) {
         
-        NSString *folderPath = [[CSFileHandle shareSingleCase] getObjectPath:FolderCachesType folderRelativePath:CSToolKitFolder fileName:ModelArchiveFolder];
+//        NSString *folderPath = [[CSFileHandle shareSingleCase] getObjectPath:FolderCachesType folderRelativePath:CSToolKitFolder fileName:ModelArchiveFolder];
+//        NSString *folderPath = [[CSFileManager shareSingleCase] get]
         
-        NSString *filePath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.data",fileName]];
+//        NSString *filePath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.data",fileName]];
+        
+        NSString *filePath = [[CSFileManager shareSingleCase] getFilePath:FolderCachesType folderRelativePath:ModelArchiveFolder fileName:[NSString stringWithFormat:@"%@.data",fileName]];
         
         if (SystemVersion >= 12.0) {
             
@@ -127,9 +132,11 @@
 /// 反序列化，通过文件名从沙盒中取出模型
 +(id)modelDeserialization:(NSString *)fileName {
 
-    NSString *folderPath = [[CSFileHandle shareSingleCase] getObjectPath:FolderCachesType folderRelativePath:CSToolKitFolder fileName:ModelArchiveFolder];
+//    NSString *folderPath = [[CSFileHandle shareSingleCase] getObjectPath:FolderCachesType folderRelativePath:CSToolKitFolder fileName:ModelArchiveFolder];
+//
+//    NSString *filePath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.data",fileName]];
     
-    NSString *filePath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.data",fileName]];
+     NSString *filePath = [[CSFileManager shareSingleCase] getFilePath:FolderCachesType folderRelativePath:ModelArchiveFolder fileName:[NSString stringWithFormat:@"%@.data",fileName]];
     
     if (SystemVersion >= 12.0) {
         

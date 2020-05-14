@@ -66,11 +66,9 @@ static CSDownloadRequest *downloadRequest = nil;
     }
     
     requestModel.requestUrl = downloadUrl;
-    
-    NSString *rootPath = [[CSFileHandle shareSingleCase] getSandboxFolder:sandboxFolderType];
-    
-    NSString *folderPath = [rootPath stringByAppendingPathComponent:folderRelativePath];
-    
+
+    NSString *folderPath = [[CSFileManager shareSingleCase] getFolderPath:sandboxFolderType folderRelativePath:folderRelativePath folderName:@""];
+   
     requestModel.folderPath = folderPath;
     
     requestModel.fileName = fileName == nil ? [[downloadUrl componentsSeparatedByString:@"/"] lastObject] : fileName;
@@ -79,7 +77,7 @@ static CSDownloadRequest *downloadRequest = nil;
     
     if (!isCover) {
         
-        if ([[CSFileHandle shareSingleCase] checkFileExists:requestModel.filePath]) {
+        if ([[CSFileManager shareSingleCase] checkFileExist:requestModel.filePath]) {
 
                ///完成
             if ([requestModel.target respondsToSelector:@selector(downloadFileProgress:fileUrl:filePath:fileName:)]) {
@@ -146,23 +144,19 @@ static CSDownloadRequest *downloadRequest = nil;
     }
     
     requestModel.requestUrl = downloadUrl;
-    
-    NSString *rootPath = [[CSFileHandle shareSingleCase] getSandboxFolder:FolderCachesType];
-    
-//    NSString *folderRelativePath = [rootPath stringByAppendingPathComponent:CSToolKitFolder];
-    
+
     switch (fileType) {
         case FilePublicType:{
-            requestModel.folderPath = [rootPath stringByAppendingPathComponent:PublicFolder];
+            requestModel.folderPath = [[CSFileManager shareSingleCase] getFolderPath:FolderCachesType folderRelativePath:PublicFolder folderName:@""];
         }break;
         case FileImageType:{
-             requestModel.folderPath = [rootPath stringByAppendingPathComponent:ImageFolder];
+             requestModel.folderPath = [[CSFileManager shareSingleCase] getFolderPath:FolderCachesType folderRelativePath:ImageFolder folderName:@""];
         }break;
         case FileVoiceType:{
-             requestModel.folderPath = [rootPath stringByAppendingPathComponent:VoiceFolder];
+             requestModel.folderPath = [[CSFileManager shareSingleCase] getFolderPath:FolderCachesType folderRelativePath:VoiceFolder folderName:@""];
         }break;
         case FileVideotype:{
-             requestModel.folderPath = [rootPath stringByAppendingPathComponent:VideoFolder];
+             requestModel.folderPath =  [[CSFileManager shareSingleCase] getFolderPath:FolderCachesType folderRelativePath:VideoFolder folderName:@""];
         }break;
         default:
             break;
@@ -170,28 +164,27 @@ static CSDownloadRequest *downloadRequest = nil;
     
     requestModel.fileName = [[downloadUrl componentsSeparatedByString:@"/"] lastObject];
     
-    
     if (!isCover) {
-        
-        if ([[CSFileHandle shareSingleCase] checkFileExists:requestModel.filePath]) {
+
+        if ([[CSFileManager shareSingleCase] checkFileExist:requestModel.filePath]) {
 
                ///完成
             if ([requestModel.target respondsToSelector:@selector(downloadFileProgress:fileUrl:filePath:fileName:)]) {
                 [requestModel.target downloadFileProgress:1.0 fileUrl:requestModel.requestUrl filePath:requestModel.filePath fileName:requestModel.fileName];
             }
-               
+
             if ([requestModel.target respondsToSelector:@selector(downloadFileComplete:fileUrl:filePath:fileName:message:)]) {
                 [requestModel.target downloadFileComplete:DownloadSucess fileUrl:requestModel.requestUrl filePath:requestModel.filePath fileName:requestModel.fileName message:@"下载文件成功"];
             }
-               
+
             if ([requestModel.target respondsToSelector:requestModel.action]) {
                 ((void (*)(id,SEL,DownloadRequestStatus,NSString *,NSString *,NSString *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,DownloadSucess,requestModel.requestUrl,requestModel.filePath,requestModel.fileName,@"下载文件成功");
             }
-            
-            
+
+
             return YES;
         }
-       
+
         requestModel.isCover = NO;
     }else {
         requestModel.isCover = YES;
@@ -257,33 +250,31 @@ static CSDownloadRequest *downloadRequest = nil;
         
     }];
     
-    if ([[CSFileHandle shareSingleCase] checkFileExists:requestModel.filePath]) {
-        [[CSFileHandle shareSingleCase] removeFile:requestModel.filePath];
+    BOOL folderStatus = [[CSFileManager shareSingleCase] checkFolderExist:requestModel.folderPath];
+
+    if (!folderStatus) {
+        [[CSFileManager shareSingleCase] createFolder:requestModel.folderPath];
     }
     
-    BOOL status = [[CSFileHandle shareSingleCase] checkFolderExists:requestModel.folderPath];
+    BOOL status = [[CSFileManager shareSingleCase] moveSrcFilePath:location.absoluteString dstFilePath:requestModel.filePath isCover:requestModel.isCover];
     
-    NSError *error = nil;
-    
-    [[NSFileManager defaultManager] moveItemAtURL:location toURL:[NSURL fileURLWithPath:requestModel.filePath] error:&error];
-    
-    if (error == nil && status) {
-        
+    if (status) {
+
         if ([requestModel.target respondsToSelector:@selector(downloadFileComplete:fileUrl:filePath:fileName:message:)]) {
             [requestModel.target downloadFileComplete:DownloadSucess fileUrl:requestModel.requestUrl filePath:requestModel.filePath fileName:requestModel.fileName message:@"下载文件成功"];
         }
-        
+
         if ([requestModel.target respondsToSelector:requestModel.action]) {
             ((void (*)(id,SEL,DownloadRequestStatus,NSString *,NSString *,NSString *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,DownloadSucess,requestModel.requestUrl,requestModel.filePath,requestModel.fileName,@"下载文件成功");
         }
-        
+
     }else {
         if ([requestModel.target respondsToSelector:@selector(downloadFileComplete:fileUrl:filePath:fileName:message:)]) {
-            [requestModel.target downloadFileComplete:DownloadFailed fileUrl:requestModel.requestUrl filePath:requestModel.filePath fileName:requestModel.fileName message:error.description];
+            [requestModel.target downloadFileComplete:DownloadFailed fileUrl:requestModel.requestUrl filePath:requestModel.filePath fileName:requestModel.fileName message:@"文件缓存失败"];
         }
-        
+
         if ([requestModel.target respondsToSelector:requestModel.action]) {
-            ((void (*)(id,SEL,DownloadRequestStatus,NSString *,NSString *,NSString *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,DownloadFailed,requestModel.requestUrl,requestModel.filePath,requestModel.fileName,error.description);
+            ((void (*)(id,SEL,DownloadRequestStatus,NSString *,NSString *,NSString *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,DownloadFailed,requestModel.requestUrl,requestModel.filePath,requestModel.fileName,@"文件缓存失败");
         }
     }
     
