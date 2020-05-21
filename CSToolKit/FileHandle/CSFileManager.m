@@ -2,7 +2,7 @@
 //  CSFileManager.m
 //  CSToolKit
 //
-//  Created by chengshu on 2020/5/13.
+//  Created by miaoxing_ios_chengshu on 2020/5/13.
 //  Copyright © 2020 cs. All rights reserved.
 //
 
@@ -85,10 +85,13 @@ static CSFileManager *fileManager = nil;
 
 -(BOOL)checkFileExist:(NSString *)filePath {
     
+//    NSString *safetyFilePath =
+    
+    NSString *normFilePath = [self pathNormCheck:filePath];
+    
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    return [fileManager fileExistsAtPath:filePath];
-//    return [fileManager isExecutableFileAtPath:filePath];
+    return [fileManager fileExistsAtPath:normFilePath];
  
 }
 
@@ -146,9 +149,11 @@ static CSFileManager *fileManager = nil;
 ///删除文件夹
 -(BOOL)removeFolder:(NSString *)folderPath {
     
+    NSString *normFolderPath = [self pathNormCheck:folderPath];
+    
     BOOL complete = NO;
     
-    if ([self checkFolderExist:folderPath]) {
+    if ([self checkFolderExist:normFolderPath]) {
         
         NSFileManager *manager = [NSFileManager defaultManager];
            
@@ -156,7 +161,7 @@ static CSFileManager *fileManager = nil;
               
         BOOL status = NO;
               
-        status = [manager removeItemAtPath:folderPath error:&error];
+        status = [manager removeItemAtPath:normFolderPath error:&error];
               
         if (status && error==nil) {
             complete = YES;
@@ -188,13 +193,19 @@ static CSFileManager *fileManager = nil;
 ///移除文件
 -(BOOL)removeFile:(NSString *)filePath {
     
+    NSString *fileNormPath = [self pathNormCheck:filePath];
+    
+    if (![self checkFileExist:fileNormPath]) {
+        return YES;
+    }
+    
     BOOL complete = NO;
     
     NSFileManager *manager = [NSFileManager defaultManager];
     
     NSError *error = nil;
     
-    BOOL status = [manager removeItemAtPath:filePath error:&error];
+    BOOL status = [manager removeItemAtPath:fileNormPath error:&error];
     
     if (status && error == nil) {
         
@@ -313,15 +324,21 @@ static CSFileManager *fileManager = nil;
 ///移动文件到指定的目录下
 -(BOOL)moveSrcFilePath:(NSString *)srcFilePath dstFilePath:(NSString *)dstFilePath isCover:(BOOL)isCover {
     
-    srcFilePath = [srcFilePath stringByReplacingOccurrencesOfString:@"file:///" withString:@""];
-    dstFilePath = [dstFilePath stringByReplacingOccurrencesOfString:@"file:///" withString:@""];
+    NSString *srcNormFilePath = [self pathNormCheck:srcFilePath];
+    NSString *dstNormFilePath = [self pathNormCheck:dstFilePath];
     
-    BOOL dstFileStatus = [self checkFileExist:dstFilePath];
+    BOOL srcFileStatus = [self checkFileExist:srcNormFilePath];
+    
+    if (!srcFileStatus) {
+        return NO;
+    }
+    
+    BOOL dstFileStatus = [self checkFileExist:dstNormFilePath];
     
     if (dstFileStatus) {
         
         if (isCover) {
-            [self removeFile:dstFilePath];
+            [self removeFile:dstNormFilePath];
         }else {
             return YES;
         }
@@ -333,7 +350,7 @@ static CSFileManager *fileManager = nil;
 
     NSError *error = nil;
 
-    BOOL status = [fileManager moveItemAtURL:[NSURL fileURLWithPath:srcFilePath] toURL:[NSURL fileURLWithPath:dstFilePath] error:&error];
+    BOOL status = [fileManager moveItemAtPath:srcNormFilePath toPath:dstNormFilePath error:&error];
 
     if (status && error ==nil) {
         complete = YES;
@@ -346,9 +363,16 @@ static CSFileManager *fileManager = nil;
 ///move 文件到指定的目录
 -(BOOL)moveSrcFilePathUrl:(NSURL *)srcFilePathUrl dstFilePathUrl:(NSURL *)dstFilePathUrl isCover:(BOOL)isCover {
  
-    BOOL dstFileStatus = [self checkFileExist:dstFilePathUrl.absoluteString];
+    NSString *srcNormFilePath = [self pathNormCheck:srcFilePathUrl.absoluteString];
+    NSString *dstNormFilePath = [self pathNormCheck:dstFilePathUrl.absoluteString];
     
-    if (dstFileStatus) {
+    if (![self checkFileExist:srcNormFilePath]) {
+        return NO;
+    }
+    
+//    BOOL dstFileStatus = [self checkFileExist:dstFilePathUrl.absoluteString];
+    
+    if ([self checkFileExist:dstNormFilePath]) {
         
         if (isCover) {
             [self removeFile:dstFilePathUrl.absoluteString];
@@ -363,8 +387,7 @@ static CSFileManager *fileManager = nil;
 
     NSError *error = nil;
 
-    BOOL status = [fileManager moveItemAtURL:srcFilePathUrl toURL:dstFilePathUrl error:&error];
-
+    BOOL status = [fileManager moveItemAtPath:srcNormFilePath toPath:dstNormFilePath error:&error];
     if (status && error ==nil) {
         complete = YES;
     }
@@ -377,6 +400,12 @@ static CSFileManager *fileManager = nil;
 -(BOOL)copySrcFilePath:(NSString *)srcFilePath toSandBoxFolderType:(SandBoxFolderType)sandboxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName isCover:(BOOL)isCover{
     
     BOOL complete = NO;
+    
+    NSString *srcNormFilePath = [self pathNormCheck:srcFilePath];
+    
+    if (![self checkFileExist:srcNormFilePath]) {
+        return NO;
+    }
     
     NSString *dstFolderPath = [self getFolderPath:sandboxFolderType folderRelativePath:folderRelativePath folderName:@""];
     
@@ -392,7 +421,7 @@ static CSFileManager *fileManager = nil;
             return NO;
         }
     }
-    complete = [self copySrcFilePath:srcFilePath toDstFilePath:dstFilePath isCover:isCover];
+    complete = [self copySrcFilePath:srcNormFilePath toDstFilePath:dstFilePath isCover:isCover];
 
     return complete;
 }
@@ -400,15 +429,17 @@ static CSFileManager *fileManager = nil;
 ///copy 文件到指定的文件目录下
 -(BOOL)copySrcFilePath:(NSString *)srcFilePath toDstFilePath:(NSString *)dstFilePath isCover:(BOOL)isCover {
     
-    srcFilePath = [srcFilePath stringByReplacingOccurrencesOfString:@"file:///" withString:@""];
-    dstFilePath = [dstFilePath stringByReplacingOccurrencesOfString:@"file:///" withString:@""];
+    NSString *srcNormFilePath = [self pathNormCheck:srcFilePath];
+    NSString *dstNormFilePath = [self pathNormCheck:dstFilePath];
     
-    BOOL dstFileStatus = [self checkFileExist:dstFilePath];
+    if (![self checkFileExist:srcNormFilePath]) {
+        return NO;
+    }
     
-    if (dstFileStatus) {
+    if ([self checkFileExist:dstNormFilePath]) {
         
         if (isCover) {
-            [self removeFile:dstFilePath];
+            [self removeFile:dstNormFilePath];
         }else {
             return YES;
         }
@@ -420,7 +451,7 @@ static CSFileManager *fileManager = nil;
 
     NSError *error = nil;
 
-    BOOL status = [fileManager copyItemAtURL:[NSURL fileURLWithPath:srcFilePath] toURL:[NSURL fileURLWithPath:dstFilePath] error:&error];
+    BOOL status = [fileManager copyItemAtURL:[NSURL fileURLWithPath:srcNormFilePath] toURL:[NSURL fileURLWithPath:dstNormFilePath] error:&error];
 
     if (status && error ==nil) {
         complete = YES;
@@ -432,14 +463,20 @@ static CSFileManager *fileManager = nil;
 ///copy 文件到指定的目录
 -(BOOL)copySrcFileUrl:(NSURL *)srcFileUrl toDstFileUrl:(NSURL *)dstFileUrl isCover:(BOOL)isCover {
     
-    NSString *dstFilePath = [dstFileUrl.absoluteString stringByReplacingOccurrencesOfString:@"file:///" withString:@""];
+//    NSString *dstFilePath = [dstFileUrl.absoluteString stringByReplacingOccurrencesOfString:@"file:///" withString:@""];
+    NSString *dstNormFilePath = [self pathNormCheck:dstFileUrl.absoluteString];
+    NSString *srcNormFilePath = [self pathNormCheck:srcFileUrl.absoluteString];
     
-    BOOL dstFileStatus = [self checkFileExist:dstFilePath];
+    if (![self checkFileExist:srcNormFilePath]) {
+        return NO;
+    }
     
-    if (dstFileStatus) {
+   
+    
+    if ([self checkFileExist:dstNormFilePath]) {
         
         if (isCover) {
-            [self removeFile:dstFilePath];
+            [self removeFile:dstNormFilePath];
         }else {
             return YES;
         }
@@ -451,7 +488,7 @@ static CSFileManager *fileManager = nil;
 
     NSError *error = nil;
 
-    BOOL status = [fileManager copyItemAtURL:srcFileUrl toURL:dstFileUrl error:&error];
+    BOOL status = [fileManager copyItemAtPath:srcNormFilePath toPath:dstNormFilePath error:&error];
 
     if (status && error ==nil) {
         complete = YES;
@@ -460,6 +497,12 @@ static CSFileManager *fileManager = nil;
     return complete;
 }
 
+///路径规范检查，如果包含 “file:///” 将 强制去除
+-(NSString *)pathNormCheck:(NSString *)path {
+    
+    return [path stringByReplacingOccurrencesOfString:@"file:///" withString:@""];
+    
+}
 
 #pragma mark - singlecase
 + (instancetype)shareSingleCase {

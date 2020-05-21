@@ -34,7 +34,7 @@
 
 #pragma mark - Func
 ///Post 请求s
--(BOOL)postRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl parameter:(id)parameter {
+-(BOOL)postRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl header:(nonnull id)header parameter:(nonnull id)parameter {
     
     RequestModel *requestModel = [RequestModel CSInit];
     
@@ -65,7 +65,7 @@
 
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:Url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:self.timeOut==0?60:self.timeOut];
     request.HTTPMethod = @"POST";
-
+    
     [request setValue:self.contentType.length==0?@"application/json":self.contentType forHTTPHeaderField:@"Content-Type"];
 
     if ([parameter isKindOfClass:[CSBaseModel class]]) {
@@ -89,9 +89,25 @@
         }
 
     }
-
-   requestModel.parameter = parameter;
-       
+    
+    requestModel.parameter = parameter;
+    
+    if (header != nil) {
+        
+        if ([header isKindOfClass:[CSBaseModel class]]) {
+            
+            [request setAllHTTPHeaderFields:[header modelEncapsulationAsDict]];
+            
+        }else if ([header isKindOfClass:[NSDictionary class]] || [header isKindOfClass:[NSMutableDictionary class]]) {
+            
+            [request setAllHTTPHeaderFields:[NSDictionary dictionaryWithDictionary:header]];
+            
+        }else {
+            NSLog(@"header为继承自CSBaseModel的对象或者NSDictionary或者NSMutableDictionary的对象");
+        }
+        
+    }
+    
     [self.requestArray addObject:requestModel];
     
     if ([CSSingleCase shareSingleCase].usingCookie) {
@@ -117,7 +133,7 @@
 }
 
 /// Get 请求
--(BOOL)getRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl parameter:(id)parameter {
+-(BOOL)getRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl header:(nonnull id)header parameter:(nonnull id)parameter {
     
     RequestModel *requestModel = [RequestModel CSInit];
     
@@ -199,6 +215,22 @@
     }
     
     request.HTTPMethod = @"GET";
+    
+    if (header != nil) {
+        
+        if ([header isKindOfClass:[CSBaseModel class]]) {
+            
+            [request setAllHTTPHeaderFields:[header modelEncapsulationAsDict]];
+            
+        }else if ([header isKindOfClass:[NSDictionary class]] || [header isKindOfClass:[NSMutableDictionary class]]) {
+            
+            [request setAllHTTPHeaderFields:[NSDictionary dictionaryWithDictionary:header]];
+            
+        }else {
+            NSLog(@"header为继承自CSBaseModel的对象或者NSDictionary或者NSMutableDictionary的对象");
+        }
+        
+    }
     
     NSOperationQueue *queue = [[NSOperationQueue alloc]init];
     queue.name = [NSString stringWithFormat:@"%li",(long)self.requestIdentifer];
