@@ -103,6 +103,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 //+(NSString *)getPrimaryKey;
 
+/*
+ * @description 属性名称替换
+ * @return 替换字典
+ * @remark 此方法用于替换关键字操作 类似 getDictionaryForGenericsInModel
+ */
++(NSDictionary *)propertyNameReplaceName;
+
+
 -(dispatch_queue_t)queue;
 
 @end

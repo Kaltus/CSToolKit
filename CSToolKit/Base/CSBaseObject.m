@@ -29,15 +29,21 @@
     id model = [[self alloc]init];
     
     NSMutableDictionary *dataMutableDict = [[NSMutableDictionary alloc]init];
-    
+    __block NSDictionary *propertyNameDict = [[self class] propertyNameReplaceName];
     NSArray *propertys = [self getPropertys];
     
     if (propertys.count > 0) {
         
         [propertys enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
               
-            id content = [dataDict objectForKey:[obj objectForKey:PropertyName]];
+            NSString *propertyName = [propertyNameDict objectForKey:[obj objectForKey:PropertyName]];
                        
+            if (propertyName == nil || [propertyName isEqualToString:@""] || [propertyName isKindOfClass:[NSNull class]]) {
+                propertyName = [obj objectForKey:PropertyName];
+            }
+            
+            id content = [dataDict objectForKey:propertyName];
+            
             if ([content isKindOfClass:[NSNull class]] || content == nil) {
                 content = [[NSClassFromString([obj objectForKey:PropertyType]) alloc] init];
             }
@@ -85,13 +91,21 @@
 -(void)dictEncapsulationAsModel:(NSDictionary *)dataDict {
     
     __block NSMutableDictionary *dataMutableDict = [[NSMutableDictionary alloc]init];
+    __block NSDictionary *propertyNameDict = [[self class] propertyNameReplaceName];
+    
     NSArray *propertys = [self getPropertys];
     
     if (propertys.count > 0) {
            
         [propertys enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                 
-            id content = [dataDict objectForKey:[obj objectForKey:PropertyName]];
+            
+            NSString *propertyName = [propertyNameDict objectForKey:[obj objectForKey:PropertyName]];
+                       
+            if (propertyName == nil || [propertyName isEqualToString:@""] || [propertyName isKindOfClass:[NSNull class]]) {
+                propertyName = [obj objectForKey:PropertyName];
+            }
+            
+            id content = [dataDict objectForKey:propertyName];
             
             if ([content isKindOfClass:[NSNull class]] || content == nil) {
                 content = [[NSClassFromString([obj objectForKey:PropertyType]) alloc] init];
@@ -179,13 +193,19 @@
 -(NSDictionary *)modelEncapsulationAsDict {
     
     NSMutableDictionary *mutableDict = [[NSMutableDictionary alloc]init];
-    
+    __block NSDictionary *propertyNameDict = [[self class] propertyNameReplaceName];
     NSArray *propertys = [self getPropertys];
     
     if (propertys.count > 0) {
         
         [propertys enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
            
+            NSString *propertyName = [propertyNameDict objectForKey:[obj objectForKey:PropertyName]];
+                       
+            if (propertyName == nil || [propertyName isEqualToString:@""] || [propertyName isKindOfClass:[NSNull class]]) {
+                propertyName = [obj objectForKey:PropertyName];
+            }
+            
             id content = [self valueForKey:[obj objectForKey:PropertyName]];
             
             if ([content isKindOfClass:[NSNull class]] || content == nil) {
@@ -194,16 +214,16 @@
             
             if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[CSBaseObject class]]) {
             
-                 [mutableDict setObject:[content modelEncapsulationAsDict] forKey:[obj objectForKey:PropertyName]];
+                 [mutableDict setObject:[content modelEncapsulationAsDict] forKey:propertyName];
             
             }else if ([NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSArray class]] || [NSClassFromString([obj objectForKey:PropertyType]) isSubclassOfClass:[NSMutableArray class]]) {
                 
-                [mutableDict setValue:[self modelsEncapsulationAsDicts:content] forKey:[obj objectForKey:PropertyName]];
+                [mutableDict setValue:[self modelsEncapsulationAsDicts:content] forKey:propertyName];
                 
             }
             else {
                                 
-                [mutableDict setValue:content forKey:[obj objectForKey:PropertyName]];
+                [mutableDict setValue:content forKey:propertyName];
                 
             }
             
@@ -310,6 +330,11 @@
 
 ///获取字典 获取一个字典，这个字典是模型中的泛型数组的集合 此方法如果在模型中有模型数组，必须在模型中实现
 +(NSDictionary *)getDictionaryForGenericsInModel {
+    return [NSDictionary dictionary];
+}
+
+///属性名称替换
++(NSDictionary *)propertyNameReplaceName {
     return [NSDictionary dictionary];
 }
 
