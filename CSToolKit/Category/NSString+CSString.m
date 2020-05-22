@@ -148,5 +148,25 @@
     
 }
 
+///字符串中提取URL 数组
+-(NSArray *)extractUrl {
+    
+    NSError *error = nil;
+    
+    NSString *regulaStr = @"((http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)|(www.[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)";
+
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:regulaStr options:NSRegularExpressionCaseInsensitive error:&error];
+
+    NSArray *arrayOfAllMatches = [regex matchesInString:self options:0 range:NSMakeRange(0, [self length])];
+
+    NSMutableArray *urlArray = [[NSMutableArray alloc] init];
+
+    for (NSTextCheckingResult *match in arrayOfAllMatches){
+        NSString* substringForMatch;
+        substringForMatch = [self substringWithRange:match.range];
+        [urlArray addObject:substringForMatch];
+    }
+    return urlArray.copy;
+}
 
 @end

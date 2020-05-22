@@ -138,14 +138,21 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /*
+ * @description 移动文件到指定的文件目录
+ * @param scrFilePath 源文件
+ * @param dstFilePath 目标文件路径
+ * @param isCover 是否覆盖
+ * @return 移动文件到指定的文件目录是否成功
+ */
+-(BOOL)moveSrcFilePath:(NSString *)srcFilePath dstFilePath:(NSString *)dstFilePath isCover:(BOOL)isCover;
+
+/*
 * @description 移动文件到指定的文件目录
-* @param scrFilePath 源文件
-* @param dstFilePath 目标文件路径
+* @param srcFilePathUrl 源文件路径url
+* @param dstFilePathUrl 目标文件路径url
 * @param isCover 是否覆盖
 * @return 移动文件到指定的文件目录是否成功
 */
--(BOOL)moveSrcFilePath:(NSString *)srcFilePath dstFilePath:(NSString *)dstFilePath isCover:(BOOL)isCover;
-
 -(BOOL)moveSrcFilePathUrl:(NSURL *)srcFilePathUrl dstFilePathUrl:(NSURL *)dstFilePathUrl isCover:(BOOL)isCover;
 
 /*

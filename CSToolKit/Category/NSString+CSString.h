@@ -32,7 +32,6 @@ typedef NS_ENUM(NSInteger,SHAEncodingType) {
  */
 -(id)jsonConvertObject:(NSStringEncoding)encoding;
 
-
 /*
  * @description base64编码加密
  * @param string 待编码加密的字符串
@@ -62,6 +61,12 @@ typedef NS_ENUM(NSInteger,SHAEncodingType) {
  * @return sha编码
  */
 -(NSString *)SHAEncoding:(SHAEncodingType)shaEncodingType;
+
+/*
+ * @description 提取Url
+ * @return 提取后的url
+ */
+-(NSArray *)extractUrl;
 
 @end
 

@@ -85,8 +85,6 @@ static CSFileManager *fileManager = nil;
 
 -(BOOL)checkFileExist:(NSString *)filePath {
     
-//    NSString *safetyFilePath =
-    
     NSString *normFilePath = [self pathNormCheck:filePath];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -222,75 +220,77 @@ static CSFileManager *fileManager = nil;
         
         BOOL complete = NO;
             
-            NSString *folderPath = [self getFolderPath:sandBoxFolderType folderRelativePath:folderRelativePath folderName:@""];
-            NSString *filePath = [self getFilePath:sandBoxFolderType folderRelativePath:folderRelativePath fileName:fileName];
+        NSString *folderPath = [self getFolderPath:sandBoxFolderType folderRelativePath:folderRelativePath folderName:@""];
+        NSString *filePath = [self getFilePath:sandBoxFolderType folderRelativePath:folderRelativePath fileName:fileName];
             
-            BOOL folderStatus = [self checkFolderExist:folderPath];
+        BOOL folderStatus = [self checkFolderExist:folderPath];
+        
+        if (!folderStatus) {
+            folderStatus = [self createFolder:folderPath];
+        }
             
-            if (!folderStatus) {
-                folderStatus = [self createFolder:folderPath];
-            }
-            
-            if (!folderStatus) {
-                complete = folderStatus;
+        if (!folderStatus) {
+            complete = folderStatus;
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if ([self.delegate respondsToSelector:@selector(saveFileComplete:filePath:fileName:message:)]) {
-                        [self.delegate saveFileComplete:SaveFileFailed filePath:filePath fileName:fileName message:[NSString stringWithFormat:@"保存文件%@失败",fileName]];
-                    }
-                });
-                return;
-                
-            }
-            
-            ///文件检查，是否存在该文件
-            BOOL fileStatus = [self checkFileExist:filePath];
-            
-            if (fileStatus) {
-                
-                if (isCover) {
-                    [self removeFile:filePath];
-                }else {
-                    complete = fileStatus;
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if ([self.delegate respondsToSelector:@selector(saveFileComplete:filePath:fileName:message:)]) {
-                            [self.delegate saveFileComplete:SaveFileExist filePath:filePath fileName:fileName message:[NSString stringWithFormat:@"文件%@已经存在",fileName]];
-                        }
-                    });
-                    return;
-                }
-            }
-            
-            BOOL createFileStatus = NO;
-            
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            
-            createFileStatus = [fileManager createFileAtPath:filePath contents:fileData attributes:nil];
-            
-            if (!createFileStatus) {
-                complete = createFileStatus;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if ([self.delegate respondsToSelector:@selector(saveFileComplete:filePath:fileName:message:)]) {
-                        [self.delegate saveFileComplete:SaveFileFailed filePath:filePath fileName:fileName message:[NSString stringWithFormat:@"无法创建文件%@",fileName]];
-                    }
-                });
-                return;
-            }
-            
-            BOOL writeDataToFileStatus = NO;
-            NSError *error = nil;
-            writeDataToFileStatus = [fileData writeToFile:filePath options:NSDataWritingAtomic error:&error];
-                           
-            if (writeDataToFileStatus && error == nil) {
-                complete = YES;
-            }
-            
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([self.delegate respondsToSelector:@selector(saveFileComplete:filePath:fileName:message:)]) {
-                    [self.delegate saveFileComplete:SaveFileSucess filePath:filePath fileName:fileName message:[NSString stringWithFormat:@"保存文件%@成功",fileName]];
+                    [self.delegate saveFileComplete:SaveFileFailed filePath:filePath fileName:fileName message:[NSString stringWithFormat:@"保存文件%@失败",fileName]];
+                }
+            });
+            
+            return;
+                
+        }
+            
+        ///文件检查，是否存在该文件
+        BOOL fileStatus = [self checkFileExist:filePath];
+            
+        if (fileStatus) {
+                
+            if (isCover) {
+                [self removeFile:filePath];
+            }else {
+                complete = fileStatus;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([self.delegate respondsToSelector:@selector(saveFileComplete:filePath:fileName:message:)]) {
+                        [self.delegate saveFileComplete:SaveFileExist filePath:filePath fileName:fileName message:[NSString stringWithFormat:@"文件%@已经存在",fileName]];
+                    }
+                });
+                return;
+            }
+        }
+            
+        BOOL createFileStatus = NO;
+            
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+            
+        createFileStatus = [fileManager createFileAtPath:filePath contents:fileData attributes:nil];
+            
+        if (!createFileStatus) {
+            complete = createFileStatus;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([self.delegate respondsToSelector:@selector(saveFileComplete:filePath:fileName:message:)]) {
+                    [self.delegate saveFileComplete:SaveFileFailed filePath:filePath fileName:fileName message:[NSString stringWithFormat:@"无法创建文件%@",fileName]];
                 }
             });
             return;
+        }
+            
+        BOOL writeDataToFileStatus = NO;
+        NSError *error = nil;
+        writeDataToFileStatus = [fileData writeToFile:filePath options:NSDataWritingAtomic error:&error];
+                           
+        if (writeDataToFileStatus && error == nil) {
+            complete = YES;
+        }
+            
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([self.delegate respondsToSelector:@selector(saveFileComplete:filePath:fileName:message:)]) {
+                [self.delegate saveFileComplete:SaveFileSucess filePath:filePath fileName:fileName message:[NSString stringWithFormat:@"保存文件%@成功",fileName]];
+                }
+        });
+        
+        return;
     });
 }
 
@@ -369,8 +369,6 @@ static CSFileManager *fileManager = nil;
     if (![self checkFileExist:srcNormFilePath]) {
         return NO;
     }
-    
-//    BOOL dstFileStatus = [self checkFileExist:dstFilePathUrl.absoluteString];
     
     if ([self checkFileExist:dstNormFilePath]) {
         
@@ -463,7 +461,6 @@ static CSFileManager *fileManager = nil;
 ///copy 文件到指定的目录
 -(BOOL)copySrcFileUrl:(NSURL *)srcFileUrl toDstFileUrl:(NSURL *)dstFileUrl isCover:(BOOL)isCover {
     
-//    NSString *dstFilePath = [dstFileUrl.absoluteString stringByReplacingOccurrencesOfString:@"file:///" withString:@""];
     NSString *dstNormFilePath = [self pathNormCheck:dstFileUrl.absoluteString];
     NSString *srcNormFilePath = [self pathNormCheck:srcFileUrl.absoluteString];
     
