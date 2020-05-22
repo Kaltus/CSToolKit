@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "CSToolKit"
-  spec.version      = "1.2.1"
+  spec.version      = "1.2.2"
   spec.summary      = "A short description of CSToolKit."
 
   # This description is used to generate tags and improve search results.
