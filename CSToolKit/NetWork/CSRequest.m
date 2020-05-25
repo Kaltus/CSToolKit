@@ -346,7 +346,7 @@
                 
                 if ([requestModel.target respondsToSelector:requestModel.action]) {
                     
-                    ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(requestModel.target,requestModel.action,RequestUnsual,[NSDictionary dictionary],error.userInfo.description);
+                    ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(requestModel.target,requestModel.action,RequestUnsual,[NSDictionary dictionary],error.localizedDescription);
                     
                 }
                 

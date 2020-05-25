@@ -34,6 +34,31 @@ typedef NS_ENUM(NSInteger,RequestStatusCode){
     RequestUnsual = 5
 };
 
+///请求完成状态吗
+typedef NS_ENUM(NSInteger,RequestCompleteCode) {
+    
+    ///请求通过
+    RequestSucessComplete,
+    
+    ///请求失败
+    RequestFailedComplete
+    
+};
+
+///刷新类型
+typedef NS_ENUM(NSInteger,RefreshType) {
+    
+    ///没有刷新
+    NoRefreshType ,
+    
+    ///加载更多
+    LoadMoreRefreshType,
+    
+    ///下拉刷新
+    ReloadRefreshType
+    
+};
+
 ///文件路径类型
 typedef NS_ENUM(NSInteger,SandBoxFolderType) {
     
@@ -83,6 +108,7 @@ typedef NS_ENUM(NSInteger,FileType) {
     
 };
 
+///文件读取状态
 typedef NS_ENUM(NSInteger,ReadFileStatus) {
     
     ///读取数据成功
@@ -182,3 +208,4 @@ typedef NS_ENUM(NSInteger,DownloadRequestStatus) {
 #define Post_Form_Line @"\r\n"
 
 #endif /* CSPch_h */
+
