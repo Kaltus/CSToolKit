@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import <UIKit/UIKit.h>
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger,SHAEncodingType) {
@@ -25,6 +25,25 @@ typedef NS_ENUM(NSInteger,SHAEncodingType) {
 };
 
 @interface NSString (CSString)
+
+/*
+ * @description 自适应 获取字符串在指定的条件下的宽高
+ * @param string 指定的字符串
+ * @param font 字符串的font
+ * @param limitSize 限制尺寸
+ * @return 字符串的宽高
+ */
+-(CGSize)autoSizeString:(NSString *)string font:(UIFont *)font limitSize:(CGSize)limitSize;
+
+/*
+* @description 自适应 获取字符串在指定的条件下的宽高
+* @param string 指定的字符串
+* @param font 字符串的font
+* @param limitSize 限制尺寸
+* @param option 字符串适配选项
+* @return 字符串的宽高
+*/
+-(CGSize)autoSizeString:(NSString *)string font:(UIFont *)font limitSize:(CGSize)limitSize option:(NSStringDrawingOptions)option;
 
 /*
  * @description json 字符串转换为对象
@@ -71,3 +90,4 @@ typedef NS_ENUM(NSInteger,SHAEncodingType) {
 @end
 
 NS_ASSUME_NONNULL_END
+

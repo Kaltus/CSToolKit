@@ -11,6 +11,18 @@
 
 @implementation NSString (CSString)
 
+///字符串自适应宽高
+-(CGSize)autoSizeString:(NSString *)string font:(UIFont *)font limitSize:(CGSize)limitSize {
+    
+    return [string boundingRectWithSize:limitSize options:NSStringDrawingUsesDeviceMetrics attributes:@{NSFontAttributeName:font} context:nil].size;
+}
+
+///字符串自适应宽高
+-(CGSize)autoSizeString:(NSString *)string font:(UIFont *)font limitSize:(CGSize)limitSize option:(NSStringDrawingOptions)option {
+    
+    return [string boundingRectWithSize:limitSize options:option attributes:@{NSFontAttributeName:font} context:nil].size;
+}
+
 ///json字符串转换为对象
 -(id)jsonConvertObject:(NSStringEncoding)encoding {
     
@@ -170,3 +182,4 @@
 }
 
 @end
+
