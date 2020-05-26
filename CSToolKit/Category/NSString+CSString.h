@@ -33,7 +33,7 @@ typedef NS_ENUM(NSInteger,SHAEncodingType) {
  * @param limitSize 限制尺寸
  * @return 字符串的宽高
  */
--(CGSize)autoSizeString:(NSString *)string font:(UIFont *)font limitSize:(CGSize)limitSize;
+-(CGSize)autoSizeFont:(UIFont *)font limitSize:(CGSize)limitSize;
 
 /*
 * @description 自适应 获取字符串在指定的条件下的宽高
@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger,SHAEncodingType) {
 * @param option 字符串适配选项
 * @return 字符串的宽高
 */
--(CGSize)autoSizeString:(NSString *)string font:(UIFont *)font limitSize:(CGSize)limitSize option:(NSStringDrawingOptions)option;
+-(CGSize)autoSizeFont:(UIFont *)font limitSize:(CGSize)limitSize option:(NSStringDrawingOptions)option;
 
 /*
  * @description json 字符串转换为对象
