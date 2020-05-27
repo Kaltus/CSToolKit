@@ -242,8 +242,16 @@
         
         [models enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             
-            [mutableArray addObject:[obj modelEncapsulationAsDict]];
-            
+            if ([[obj superclass] isSubclassOfClass:[CSBaseObject class]]) {
+                
+                [mutableArray addObject:[obj modelEncapsulationAsDict]];
+                
+            }else {
+                
+                [mutableArray addObject:obj];
+                
+            }
+        
         }];
     }
     
@@ -343,3 +351,4 @@
 //}
 
 @end
+
