@@ -151,6 +151,13 @@
 
 }
 
++(BOOL)removeSerializationFile:(NSString *)fileName {
+    
+    NSString *filePath = [[CSFileManager shareSingleCase] getFilePath:FolderCachesType folderRelativePath:ModelArchiveFolder fileName:[NSString stringWithFormat:@"%@.data",fileName]];
+    
+    return [[CSFileManager shareSingleCase] removeFile:filePath];
+    
+}
 
 
 @end

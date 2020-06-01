@@ -28,6 +28,13 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (id) modelDeserialization:(NSString *)fileName;
 
+/*
+ * @description 移除序列化的文件
+ * @param fileName 序列化后的文件名称
+ * @return 移除序列化的文件是否成功
+ */
++ (BOOL) removeSerializationFile:(NSString *)fileName;
+
 @end
 
 
