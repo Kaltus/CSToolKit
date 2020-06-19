@@ -7,7 +7,6 @@
 //
 
 #import "CSImageHandle.h"
-#import "CSFileManager.h"
 
 @implementation CSImageHandle
 
