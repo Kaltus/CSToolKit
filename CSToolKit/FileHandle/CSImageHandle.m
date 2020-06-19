@@ -2,14 +2,14 @@
 //  CSImageHandle.m
 //  CSToolKit
 //
-//  Created by chengshu on 2020/6/19.
+//  Created by miaoxing_ios_chengshu on 2020/6/19.
 //  Copyright © 2020 cs. All rights reserved.
 //
 
 #import "CSImageHandle.h"
 #import "CSFileManager.h"
 
-@implementation CSImageHandles
+@implementation CSImageHandle
 
 /// 图片尺寸处理
 -(UIImage *)imageSizeCompress:(UIImage *)image imageSize:(CGSize)imageSize {
@@ -21,6 +21,9 @@
     return image;
     
 }
+
+
+
 
 
 @end
