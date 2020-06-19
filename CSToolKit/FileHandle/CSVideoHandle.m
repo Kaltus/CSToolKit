@@ -2,7 +2,7 @@
 //  CSVideoHandle.m
 //  CSToolKit
 //
-//  Created by miaoxing_ios_chengshu on 2020/6/19.
+//  Created by chengshu on 2020/6/19.
 //  Copyright © 2020 cs. All rights reserved.
 //
 
