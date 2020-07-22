@@ -54,7 +54,7 @@
 
         if ([requestModel.target respondsToSelector:requestModel.action]) {
 
-            ((void (*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,RequestLinkUrlUnusual,[NSDictionary dictionary],@"请求Url为空");
+            ((void (*)(id,SEL,RequestStatusCode,NSDictionary *,NSDictionary *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,RequestLinkUrlUnusual,[NSDictionary dictionary],[NSDictionary dictionary],@"请求Url为空");
         }
         return NO;
     }
@@ -84,7 +84,7 @@
 
         if ([requestModel.target respondsToSelector:requestModel.action]) {
 
-            ((void (*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,RequestParameterUnusual,[NSDictionary dictionary],@"请求参数错误");
+            ((void (*)(id,SEL,RequestStatusCode,NSDictionary *,NSDictionary *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,RequestParameterUnusual,[NSDictionary dictionary],[NSDictionary dictionary],@"请求参数错误");
             return NO;
         }
 
@@ -155,7 +155,7 @@
         
         if ([requestModel.target respondsToSelector:requestModel.action]) {
         
-            ((void (*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,RequestLinkUrlUnusual,[NSDictionary dictionary],@"请求Url为空");
+            ((void (*)(id,SEL,RequestStatusCode,NSDictionary *,NSDictionary *,NSString *)) objc_msgSend)(requestModel.target,requestModel.action,RequestLinkUrlUnusual,[NSDictionary dictionary],[NSDictionary dictionary],@"请求Url为空");
         }
         return NO;
     }
@@ -189,7 +189,7 @@
             {
                 
                 if ([requestModel.target respondsToSelector:requestModel.action]) {
-                    ((void (*)(id, SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(requestModel.target, requestModel.action,RequestParameterUnusual,[NSDictionary dictionary],@"请求参数异常");
+                    ((void (*)(id, SEL,RequestStatusCode,NSDictionary *,NSDictionary *,NSString *))objc_msgSend)(requestModel.target, requestModel.action,RequestParameterUnusual,[NSDictionary dictionary],[NSDictionary dictionary],@"请求参数异常");
                 }
             
                 return NO;
@@ -288,6 +288,8 @@
 
 /// 任务完成时调用（如果成功，error == nil）
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+
+    NSHTTPURLResponse *responese = (NSHTTPURLResponse *)task.response;
     
     __block RequestModel *requestModel = nil;
     
@@ -330,14 +332,14 @@
                 } @catch (NSException *exception) {
                     
                     if ([requestModel.target respondsToSelector:requestModel.action]) {
-                        ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(requestModel.target,requestModel.action,RequestDataAnalysisUnusal,nil,@"数据解析异常");
+                        ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSDictionary *,NSString *))objc_msgSend)(requestModel.target,requestModel.action,RequestDataAnalysisUnusal,[NSDictionary dictionary],responese.allHeaderFields,@"数据解析异常");
                     }
                     
                 } @finally {
                     
                     if ([requestModel.target respondsToSelector:requestModel.action]) {
                         
-                        ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(requestModel.target,requestModel.action,RequestSuccessful,dataDict,@"请求通过，获取数据成功");
+                        ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSDictionary *,NSString *))objc_msgSend)(requestModel.target,requestModel.action,RequestSuccessful,dataDict,responese.allHeaderFields,@"请求通过，获取数据成功");
                         
                     }
                 }
@@ -346,7 +348,7 @@
                 
                 if ([requestModel.target respondsToSelector:requestModel.action]) {
                     
-                    ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSString *))objc_msgSend)(requestModel.target,requestModel.action,RequestUnsual,[NSDictionary dictionary],error.localizedDescription);
+                    ((void(*)(id,SEL,RequestStatusCode,NSDictionary *,NSDictionary *,NSString *))objc_msgSend)(requestModel.target,requestModel.action,RequestUnsual,[NSDictionary dictionary],[NSDictionary dictionary],error.localizedDescription);
                     
                 }
                 
