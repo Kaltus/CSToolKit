@@ -184,6 +184,13 @@ NS_ASSUME_NONNULL_BEGIN
 */
 -(BOOL)copySrcFileUrl:(NSURL *)srcFileUrl toDstFileUrl:(NSURL *)dstFileUrl isCover:(BOOL)isCover;
 
+/*
+ * @description 路径检查 将会去除file:///
+ * @param path 需检查的本地路径
+ 8 @return 返回合适的path
+ */
+-(NSString *)pathNormCheck:(NSString *)path;
+
 @end
 
 NS_ASSUME_NONNULL_END

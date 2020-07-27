@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*
  * @description Post请求
  * @param target 委托对象
- * @param action 代理方法,当请求完成后的回调（备注:方法格式selector:withDic: 方法包含两个参数。 参数1:RequestTypeCode  参数2:字典  参数3：response.header）
+ * @param action 代理方法,当请求完成后的回调（备注:方法格式selector:withDic: 方法包含4个参数。 参数1:RequestTypeCode  参数2:字典  参数3：response.header 参数4：message）
  * @param requestUrl 请求地址
  * @param header 请求头
  * @param parameter 请求参数
@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*
 * @description Get请求
 * @param target 委托对象
-* @param action 代理方法,当请求完成后的回调（备注:方法格式selector:withDic: 方法包含两个参数。 参数1:RequestTypeCode  参数2:字典  参数3：response.header）
+* @param action 代理方法,当请求完成后的回调（备注:方法格式selector:withDic: 方法包含4个参数。 参数1:RequestTypeCode  参数2:字典  参数3：response.header 参数4：message）
 * @param requestUrl 请求地址
 * @param header 请求头
 * @param parameter 请求参数
