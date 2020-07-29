@@ -86,7 +86,7 @@ static CSFileManager *fileManager = nil;
 /// 检查文件是否存在
 -(BOOL)checkFileExist:(NSString *)filePath {
     
-    NSString *normFilePath = [self pathNormCheck:filePath];
+    NSString *normFilePath = [self pathNormExamine:filePath];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
@@ -149,7 +149,7 @@ static CSFileManager *fileManager = nil;
 ///删除文件夹
 -(BOOL)removeFolder:(NSString *)folderPath {
     
-    NSString *normFolderPath = [self pathNormCheck:folderPath];
+    NSString *normFolderPath = [self pathNormExamine:folderPath];
     
     BOOL complete = NO;
     
@@ -193,7 +193,7 @@ static CSFileManager *fileManager = nil;
 ///移除文件
 -(BOOL)removeFile:(NSString *)filePath {
     
-    NSString *fileNormPath = [self pathNormCheck:filePath];
+    NSString *fileNormPath = [self pathNormExamine:filePath];
     
     if (![self checkFileExist:fileNormPath]) {
         return YES;
@@ -327,8 +327,8 @@ static CSFileManager *fileManager = nil;
 ///移动文件到指定的目录下
 -(BOOL)moveSrcFilePath:(NSString *)srcFilePath dstFilePath:(NSString *)dstFilePath isCover:(BOOL)isCover {
     
-    NSString *srcNormFilePath = [self pathNormCheck:srcFilePath];
-    NSString *dstNormFilePath = [self pathNormCheck:dstFilePath];
+    NSString *srcNormFilePath = [self pathNormExamine:srcFilePath];
+    NSString *dstNormFilePath = [self pathNormExamine:dstFilePath];
     
     BOOL srcFileStatus = [self checkFileExist:srcNormFilePath];
     
@@ -366,8 +366,8 @@ static CSFileManager *fileManager = nil;
 ///move 文件到指定的目录
 -(BOOL)moveSrcFilePathUrl:(NSURL *)srcFilePathUrl dstFilePathUrl:(NSURL *)dstFilePathUrl isCover:(BOOL)isCover {
  
-    NSString *srcNormFilePath = [self pathNormCheck:srcFilePathUrl.absoluteString];
-    NSString *dstNormFilePath = [self pathNormCheck:dstFilePathUrl.absoluteString];
+    NSString *srcNormFilePath = [self pathNormExamine:srcFilePathUrl.absoluteString];
+    NSString *dstNormFilePath = [self pathNormExamine:dstFilePathUrl.absoluteString];
     
     if (![self checkFileExist:srcNormFilePath]) {
         return NO;
@@ -402,7 +402,7 @@ static CSFileManager *fileManager = nil;
     
     BOOL complete = NO;
     
-    NSString *srcNormFilePath = [self pathNormCheck:srcFilePath];
+    NSString *srcNormFilePath = [self pathNormExamine:srcFilePath];
     
     if (![self checkFileExist:srcNormFilePath]) {
         return NO;
@@ -430,8 +430,8 @@ static CSFileManager *fileManager = nil;
 ///copy 文件到指定的文件目录下
 -(BOOL)copySrcFilePath:(NSString *)srcFilePath toDstFilePath:(NSString *)dstFilePath isCover:(BOOL)isCover {
     
-    NSString *srcNormFilePath = [self pathNormCheck:srcFilePath];
-    NSString *dstNormFilePath = [self pathNormCheck:dstFilePath];
+    NSString *srcNormFilePath = [self pathNormExamine:srcFilePath];
+    NSString *dstNormFilePath = [self pathNormExamine:dstFilePath];
     
     if (![self checkFileExist:srcNormFilePath]) {
         return NO;
@@ -464,8 +464,8 @@ static CSFileManager *fileManager = nil;
 ///copy 文件到指定的目录
 -(BOOL)copySrcFileUrl:(NSURL *)srcFileUrl toDstFileUrl:(NSURL *)dstFileUrl isCover:(BOOL)isCover {
     
-    NSString *dstNormFilePath = [self pathNormCheck:dstFileUrl.absoluteString];
-    NSString *srcNormFilePath = [self pathNormCheck:srcFileUrl.absoluteString];
+    NSString *dstNormFilePath = [self pathNormExamine:dstFileUrl.absoluteString];
+    NSString *srcNormFilePath = [self pathNormExamine:srcFileUrl.absoluteString];
     
     if (![self checkFileExist:srcNormFilePath]) {
         return NO;
@@ -498,7 +498,7 @@ static CSFileManager *fileManager = nil;
 }
 
 ///路径规范检查，如果包含 “file:///” 将 强制去除
--(NSString *)pathNormCheck:(NSString *)path {
+-(NSString *)pathNormExamine:(NSString *)path {
     
     return [path stringByReplacingOccurrencesOfString:@"file:///" withString:@""];
     

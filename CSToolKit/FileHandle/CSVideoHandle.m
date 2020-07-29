@@ -20,7 +20,7 @@
 
 -(void)imagesConvertVideo:(NSArray *)images videoOutputPath:(NSString *)videoOutputPath videoSize:(CGSize)videoSize {
     
-    NSString *movieOutputPath = [[CSFileManager shareSingleCase] pathNormCheck:videoOutputPath];
+    NSString *movieOutputPath = [[CSFileManager shareSingleCase] pathNormExamine:videoOutputPath];
     
     NSError *error;
     

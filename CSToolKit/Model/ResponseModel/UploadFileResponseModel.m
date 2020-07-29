@@ -2,7 +2,7 @@
 //  UploadFileResponseModel.m
 //  CSToolKit
 //
-//  Created by chengshu on 2020/7/29.
+//  Created by shuying_ios_chengshu on 2020/7/29.
 //  Copyright © 2020 com.cs. All rights reserved.
 //
 

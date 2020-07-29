@@ -189,7 +189,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param path 需检查的本地路径
  8 @return 返回合适的path
  */
--(NSString *)pathNormCheck:(NSString *)path;
+-(NSString *)pathNormExamine:(NSString *)path;
 
 @end
 
