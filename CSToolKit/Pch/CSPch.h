@@ -119,11 +119,21 @@ typedef NS_ENUM(NSInteger,ReadFileStatus) {
 };
 
 ///下载请求状态
-typedef NS_ENUM(NSInteger,DownloadRequestStatus) {
+typedef NS_ENUM(NSInteger,DownloadFileCompleteCode) {
     
     DownloadSucess ,
     
     DownloadFailed
+    
+};
+
+/// 上传文件状态
+typedef NS_ENUM(NSInteger,UploadFileCompleteCode) {
+    
+    /// 上传文件成功
+    UploadSucess ,
+    /// 上传文件失败
+    UploadFailed
     
 };
 

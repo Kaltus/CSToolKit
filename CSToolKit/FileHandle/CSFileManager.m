@@ -66,7 +66,7 @@ static CSFileManager *fileManager = nil;
 }
 
 
-///检查文件是否存在
+///检查文件夹是否存在
 -(BOOL)checkFolderExist:(NSString *)folderPath {
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -83,6 +83,7 @@ static CSFileManager *fileManager = nil;
     
 }
 
+/// 检查文件是否存在
 -(BOOL)checkFileExist:(NSString *)filePath {
     
     NSString *normFilePath = [self pathNormCheck:filePath];
@@ -93,6 +94,7 @@ static CSFileManager *fileManager = nil;
  
 }
 
+/// 创建文件夹
 -(BOOL)createFolder:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath folderName:(NSString *)folderName {
 
     BOOL complete = NO;
@@ -214,6 +216,7 @@ static CSFileManager *fileManager = nil;
     return complete;
 }
 
+/// 保存文件到文件夹中
 -(void)saveFileToSandbox:(NSData *)fileData sandBoxFolderType:(SandBoxFolderType)sandBoxFolderType folderRelativePath:(NSString *)folderRelativePath fileName:(NSString *)fileName isCover:(BOOL)isCover {
     
     dispatch_async(self.queue, ^{

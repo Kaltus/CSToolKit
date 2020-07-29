@@ -1,5 +1,5 @@
 //
-//  CSDownloadRequest.h
+//  CSUploadRequest.h
 //  CSToolKit
 //
 //  Created by shuying_ios_chengshu on 2020/7/28.
@@ -7,13 +7,12 @@
 //
 
 #import "CSNetworkRequest.h"
-#import "CSPch.h"
-#import "DownloadFileResponseModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface CSUploadRequest : CSNetworkRequest
 
-@interface CSDownloadRequest : CSNetworkRequest
+
 
 @end
 
