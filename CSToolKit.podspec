@@ -25,7 +25,7 @@ Pod::Spec.new do |spec|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   spec.description  = <<-DESC
-			A short description of CSToolKit.
+			一个轻量级的私人开源框架，用于请求，上传，下载，模型操作
                    DESC
 
   spec.homepage     = "https://github.com/Kaltus/CSToolKit"
