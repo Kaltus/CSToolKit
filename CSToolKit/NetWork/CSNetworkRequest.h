@@ -38,19 +38,43 @@ typedef NS_ENUM(NSInteger,RequestType) {
 
 @optional
 /*
- * @description post请求完成回调
+ * @description 普通请求完成回调
  * @param status 请求状态
  * @param responseModel 响应模型
  */
--(void)postRequestComplete:(RequestStatusCode)status responseModel:(ResponseModel *)responseModel;
+-(void)ordinaryRequestComplete:(RequestStatusCode)status responseModel:(ResponseModel *)responseModel;
 
-/*
- * @description get请求回调
- * @param status 请求状态
- * @param responseModel 响应模型
- * @return void
- */
--(void)getResponseComplete:(RequestStatusCode)status responseModel:(ResponseModel *)responseModel;
+///*
+// * @description get请求回调
+// * @param status 请求状态
+// * @param responseModel 响应模型
+// * @return void
+// */
+//-(void)getResponseComplete:(RequestStatusCode)status responseModel:(ResponseModel *)responseModel;
+//
+///*
+// * @description patch请求回调
+// * @param status 请求状态
+// * @param responseModel 响应模型
+// * @return void
+// */
+//-(void)patchResponseComplete:(RequestStatusCode)status responseModel:(ResponseModel *)responseModel;
+//
+///*
+// * @description patch请求回调
+// * @param status 请求状态
+// * @param responseModel 响应模型
+// * @return void
+// */
+//-(void)putResponseComplete:(RequestStatusCode)status responseModel:(ResponseModel *)responseModel;
+//
+///*
+// * @description delete请求回调
+// * @param status 请求状态
+// * @param responseModel 响应模型
+// * @return void
+// */
+//-(void)deleteResponseComplete:(RequestStatusCode)status responseModel:(ResponseModel *)responseModel;
 
 /*
  * @description 下载中回调
@@ -119,6 +143,39 @@ typedef NS_ENUM(NSInteger,RequestType) {
 -(BOOL)getRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl header:(id)header parameter:(id)parameter;
 
 /*
+ * @description patch 请求
+ * @param target 委托对象
+ * @param action 代理方法
+ * @param requestUrl 请求地址
+ * @param header 请求头
+ * @param parameter 请求参数
+ * @return bool 请求是否在本地验证通过
+ */
+-(BOOL)patchRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl header:(id)header parameter:(id)parameter;
+
+/*
+ * @description put 请求
+ * @param target 委托对象
+ * @param action 代理方法
+ * @param requestUrl 请求地址
+ * @param header 请求头
+ * @param parameter 请求参数
+ * @return bool 请求是否在本地验证通过
+ */
+-(BOOL)putRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl header:(id)header parameter:(id)parameter;
+
+/*
+ * @description delete 请求
+ * @param target 委托对象
+ * @param action 代理方法
+ * @param requestUrl 请求地址
+ * @param header 请求头
+ * @param parameter 请求参数
+ * @return bool 请求是否在本地验证通过
+ */
+-(BOOL)deleteRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl header:(id)header parameter:(id)parameter;
+
+/*
  * @description 下载文件请求
  * @param target 委托对象
  * @param action 代理方法
@@ -139,6 +196,8 @@ typedef NS_ENUM(NSInteger,RequestType) {
  * @return BOOL 是否通过本地校验
  */
 -(BOOL)uploadFileRequest:(id)target action:(SEL)action uploadUrl:(NSString *)uploadUrl uploadFileModel:(UploadFileModel *)uploadFileModel header:(id)header param:(id)parameter;
+
+
 
 @end
 

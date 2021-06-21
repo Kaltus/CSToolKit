@@ -42,6 +42,15 @@
 /// get 请求
 -(BOOL)getRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl header:(id)header parameter:(id)parameter {return YES;}
 
+/// path  请求
+-(BOOL)patchRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl header:(id)header parameter:(id)parameter{return YES;}
+
+/// put 请求
+- (BOOL)putRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl header:(id)header parameter:(id)parameter{return YES;}
+
+/// delete 请求
+- (BOOL)deleteRequest:(id)target action:(SEL)action requestUrl:(NSString *)requestUrl header:(id)header parameter:(id)parameter{return YES;}
+
 /// 下载请求
 -(BOOL)downloadRequest:(id)target action:(SEL)action downloadUrl:(NSString *)downloadUrl downloadRequestModel:(id)downloadFileModel {return YES;}
 
